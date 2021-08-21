@@ -1,6 +1,6 @@
 /*
     Assignment Number: 1
-    Problem Number: 1 Ripple Carry Adder
+    Problem Number: 2 Carry Look-ahead Adder
     Semester Number: 5
     Group Number: 1 
     Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)
@@ -8,17 +8,19 @@
 
 ######################################################################################
 
-Time analysis 4bit (in ns)
+1. Time analysis 4bit (in ns)
 
 4 bit CLA
     worst delay carry out - 5.973
     worst delay sum - 5.904
 
 4 bit RCA
+    worst delay carry out - 8.004
+    worst delay sum - 7.608
 
 ######################################################################################
 
-Time analysis 16bit (in ns)
+2. Time analysis 16bit (in ns)
 
 16 bit CLA with ripple carry
     worst delay carry out - 9.825

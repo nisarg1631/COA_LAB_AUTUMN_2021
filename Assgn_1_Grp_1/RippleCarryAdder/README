@@ -12,11 +12,32 @@
 
 a - b = a + (-b)
 observe that (-b) is the 2's complement of b, -b = ~b + 1, ~b = 1's complement of b
-so A - B = RCA(a, ~b, 1)
+so a - b = RCA(a, ~b, 1)
+
+In the circuit we can put a switch which will be connected to the carry in of the adder
+and also with XOR gates with each of the input bits of b. When the switch is turned on
+it will make the carry in 1 and simultaneously flip all the bits of b (XOR with 1 flips 
+the bit avlue). This way we will get a-b in output. When switch is off it will not change
+anything and we will get a+b in output.
 
 ######################################################################################
 
 2. The longest delays in the circuits.
 
-######################################################################################
+8 bit RCA
+    worst delay carry out - 10.770
+    worst delay sum - 10.528
 
+16 bit RCA
+    worst delay carry out - 17.541
+    worst delay sum - 16.780
+
+32 bit RCA
+    worst delay carry out - 29.168
+    worst delay sum - 28.833
+
+64 bit RCA
+    worst delay carry out - 55.978
+    worst delay sum - 56.646
+
+######################################################################################
