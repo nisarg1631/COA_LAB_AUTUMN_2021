@@ -1,0 +1,39 @@
+/*
+    Assignment Number: 1
+    Problem Number: 1 Ripple Carry Adder
+    Semester Number: 5
+    Group Number: 1 
+    Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)
+*/
+
+######################################################################################
+
+Time analysis 4bit (in ns)
+
+4 bit CLA
+    worst delay carry out - 5.973
+    worst delay sum - 5.904
+
+4 bit RCA
+
+######################################################################################
+
+Time analysis 16bit (in ns)
+
+16 bit CLA with ripple carry
+    worst delay carry out - 9.825
+    worst delay sum - 9.563
+
+16 bit CLA with lookahead carry
+    worst delay carry out - 7.363
+    worst delay sum - 8.264
+
+16 bit RCA
+    worst delay carry out - 17.541
+    worst delay sum - 16.780
+
+    1. It can be observed that a CLA is significantly (almost 2x) faster than a RCA
+    2. Also a CLA with an additional lookahead carry unit performs better than 
+       simply rippling the carry
+
+######################################################################################
