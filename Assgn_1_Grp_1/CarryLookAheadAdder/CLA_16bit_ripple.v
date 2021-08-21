@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 /*
     Assignment Number: 1
-    Problem Number: 1 Ripple Carry Adder
+    Problem Number: 2 Carry Look-ahead Adder
     Semester Number: 5
     Group Number: 1 
     Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)

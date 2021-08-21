@@ -10,7 +10,7 @@
 */
 ////////////////////////////////////////////////////////////////////////////////
 
-module CLA_16bit_rippleTestbench;
+module CLA_16bit_withLCUTestbench;
 
 	// Inputs
 	reg [15:0] in1;
@@ -19,15 +19,19 @@ module CLA_16bit_rippleTestbench;
 
 	// Outputs
 	wire [15:0] sum;
-	wire [16:1] carry;
+	wire c_out;
+	wire p;
+	wire g;
 
 	// Instantiate the Unit Under Test (UUT)
-	CLA_16bit_ripple uut (
+	CLA_16bit_withLCU uut (
 		.in1(in1), 
 		.in2(in2), 
 		.c_in(c_in), 
 		.sum(sum), 
-		.carry(carry)
+		.c_out(c_out), 
+		.p(p), 
+		.g(g)
 	);
 
 	initial begin
@@ -40,7 +44,7 @@ module CLA_16bit_rippleTestbench;
 		#100;
 		in1 = 16'd25001; in2 = 16'd40535; c_in = 0;
         
-		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, c_out = %d", in1, in2, c_in, sum, carry[16]);
+		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, c_out = %d", in1, in2, c_in, sum, c_out);
 
 	end
       

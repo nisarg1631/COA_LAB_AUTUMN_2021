@@ -10,37 +10,37 @@
 */
 ////////////////////////////////////////////////////////////////////////////////
 
-module CLA_16bit_rippleTestbench;
+module CLA_4bit_augmentedTestbench;
 
 	// Inputs
-	reg [15:0] in1;
-	reg [15:0] in2;
+	reg [3:0] in1;
+	reg [3:0] in2;
 	reg c_in;
 
 	// Outputs
-	wire [15:0] sum;
-	wire [16:1] carry;
+	wire [3:0] sum;
+	wire p;
+	wire g;
 
 	// Instantiate the Unit Under Test (UUT)
-	CLA_16bit_ripple uut (
+	CLA_4bit_augmented uut (
 		.in1(in1), 
 		.in2(in2), 
 		.c_in(c_in), 
 		.sum(sum), 
-		.carry(carry)
+		.p(p), 
+		.g(g)
 	);
 
 	initial begin
 		// Initialize Inputs
-		in1 = 16'd3245; in2 = 16'd16785; c_in = 0;
+		in1 = 4'b0100; in2 = 4'b0100; c_in = 0;
 		#100;
-		in1 = 16'd3245; in2 = 16'd16785; c_in = 1;
+		in1 = 4'd0100; in2 = 4'b1100; c_in = 0;
 		#100;
-		in1 = 16'd25000; in2 = 16'd40535; c_in = 0;
-		#100;
-		in1 = 16'd25001; in2 = 16'd40535; c_in = 0;
+		in1 = 4'd1000; in2 = 4'b0111; c_in = 1;
         
-		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, c_out = %d", in1, in2, c_in, sum, carry[16]);
+		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, p = %d, g = %d", in1, in2, c_in, sum, p, g);
 
 	end
       
