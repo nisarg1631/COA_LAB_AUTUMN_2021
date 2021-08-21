@@ -1,0 +1,22 @@
+/*
+    Assignment Number: 1
+    Problem Number: 1 Ripple Carry Adder
+    Semester Number: 5
+    Group Number: 1 
+    Group Members: Animesh Jha(19CS10010), Nisarg Upadhyaya (19CS30031)
+*/
+
+######################################################################################
+
+1. How to compute difference between two n-bit numbers?
+
+a - b = a + (-b)
+observe that (-b) is the 2's complement of b, -b = ~b + 1, ~b = 1's complement of b
+so A - B = RCA(a, ~b, 1)
+
+######################################################################################
+
+2. The longest delays in the circuits.
+
+######################################################################################
+
