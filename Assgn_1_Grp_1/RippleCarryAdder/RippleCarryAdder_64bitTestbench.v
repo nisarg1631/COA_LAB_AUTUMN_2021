@@ -6,7 +6,7 @@
     Problem Number: 1 Ripple Carry Adder
     Semester Number: 5
     Group Number: 1 
-    Group Members: Animesh Jha(19CS10010), Nisarg Upadhyaya (19CS30031)
+    Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)
 */
 ////////////////////////////////////////////////////////////////////////////////
 
