@@ -33,16 +33,17 @@ module CLA_4bit_augmentedTestbench;
 	);
 
 	initial begin
+		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, p = %d, g = %d", in1, in2, c_in, sum, p, g);
 		// Initialize Inputs
 		in1 = 4'b0100; in2 = 4'b0100; c_in = 0;
 		#100;
 		in1 = 4'd0100; in2 = 4'b1100; c_in = 0;
 		#100;
 		in1 = 4'd1000; in2 = 4'b0111; c_in = 1;
-        
-		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, p = %d, g = %d", in1, in2, c_in, sum, p, g);
-
+		#100;
+		in1 = 4'b0011; in2 = 4'b0010; c_in = 1;
+		#100;
+		in1 = 4'b0001; in2 = 4'b0000; c_in = 1;
 	end
       
 endmodule
-

@@ -39,29 +39,22 @@ module CLA_4bit_augmented(
 	g = G[3] | (P[3] & G[2]) | (P[3] & P[2] & G[1]) | (P[3] & P[2] & P[1] & G[0])
 */
 
-	genvar i;
-	wire [3:0] G, P;
-	wire [3:1] carry;
+	wire [3:0] G, P, carry; // wires for bitwise generate, propagate and carries
 	
-	generate 
-	for(i=0; i<4; i=i+1) begin : block1
-		assign G[i] = in1[i] & in2[i];
-		assign P[i] = in1[i] ^ in2[i];
-	end
-	endgenerate
+	// calculate bitwise generate and propagate
+	assign G = in1 & in2;
+	assign P = in1 ^ in2;
 	
-	assign carry[1] = G[0] | (P[0] & c_in);
-	assign carry[2] = G[1] | (P[1] & G[0]) | (P[1] & P[0] & c_in);
-	assign carry[3] = G[2] | (P[2] & G[1]) | (P[2] & P[1] & G[0]) | (P[2] & P[1] & P[0] & c_in);
+	// calculate subsequent carries using generates and propagates
+	assign carry[0] = c_in;
+	assign carry[1] = G[0] | (P[0] & carry[0]);
+	assign carry[2] = G[1] | (P[1] & G[0]) | (P[1] & P[0] & carry[0]);
+	assign carry[3] = G[2] | (P[2] & G[1]) | (P[2] & P[1] & G[0]) | (P[2] & P[1] & P[0] & carry[0]);
 	
-	assign sum[0] = P[0] ^ c_in;
+	// calculate final sum using propagate and carries
+	assign sum = P ^ carry;
 	
-	generate
-	for(i=1; i<4; i=i+1) begin : block2
-		assign sum[i] = P[i] ^ carry[i];
-	end
-	endgenerate
-	
+	// calculate block propagate and generate for next level
 	assign p = P[3] & P[2] & P[1] & P[0];
 	assign g = G[3] | (P[3] & G[2]) | (P[3] & P[2] & G[1]) | (P[3] & P[2] & P[1] & G[0]);
 

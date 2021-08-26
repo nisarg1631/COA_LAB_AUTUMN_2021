@@ -35,6 +35,7 @@ module CLA_16bit_withLCUTestbench;
 	);
 
 	initial begin
+		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, c_out = %d", in1, in2, c_in, sum, c_out);
 		// Initialize Inputs
 		in1 = 16'd3245; in2 = 16'd16785; c_in = 0;
 		#100;
@@ -43,9 +44,8 @@ module CLA_16bit_withLCUTestbench;
 		in1 = 16'd25000; in2 = 16'd40535; c_in = 0;
 		#100;
 		in1 = 16'd25001; in2 = 16'd40535; c_in = 0;
-        
-		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, c_out = %d", in1, in2, c_in, sum, c_out);
-
+		#100;
+		in1 = 16'd25000; in2 = 16'd40535; c_in = 1;
 	end
       
 endmodule

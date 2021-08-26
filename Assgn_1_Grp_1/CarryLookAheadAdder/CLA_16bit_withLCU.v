@@ -20,10 +20,10 @@ module CLA_16bit_withLCU(
     output g
     );
 	 
-	wire [4:1] carry;
-	wire [3:0] P, G;
+	wire [4:1] carry; // wires for connecting carries from lookahead carry unit to the 4-bit CLAs
+	wire [3:0] P, G; // wires for connecting block propagate and generate from 4-bit CLAs to lookahead carry unit
 	 
-	// 16 bit adder by using 4 augmented 4bit CLAs and a lookahead carry unit
+	// 16 bit adder by using four augmented 4-bit CLAs and a lookahead carry unit
 	CLA_4bit_augmented cla1(.in1(in1[3:0]), .in2(in2[3:0]), .c_in(c_in), .sum(sum[3:0]), .p(P[0]), .g(G[0]));
 	CLA_4bit_augmented cla2(.in1(in1[7:4]), .in2(in2[7:4]), .c_in(carry[1]), .sum(sum[7:4]), .p(P[1]), .g(G[1]));
 	CLA_4bit_augmented cla3(.in1(in1[11:8]), .in2(in2[11:8]), .c_in(carry[2]), .sum(sum[11:8]), .p(P[2]), .g(G[2]));
