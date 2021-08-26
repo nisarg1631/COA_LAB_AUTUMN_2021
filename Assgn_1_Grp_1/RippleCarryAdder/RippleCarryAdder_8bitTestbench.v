@@ -31,13 +31,17 @@ module RippleCarryAdder_8bitTestbench;
 	);
 
 	initial begin
-		// Initialize Inputs
-		in1 = 8'b01101101; in2 = 8'b01001101; c_in = 0;
-		#100;
-		in1 = 8'b01101101; in2 = 8'b01001101; c_in = 1;
-        
 		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, c_out = %d", in1, in2, c_in, sum, c_out);
-
+		// Initialize Inputs
+		in1 = 8'd103; in2 = 8'd102; c_in = 0;
+		#100;
+		in1 = 8'd103; in2 = 8'd102; c_in = 1;
+		#100;
+		in1 = 8'd240; in2 = 8'd15; c_in = 0;
+		#100;
+		in1 = 8'd240; in2 = 8'd16; c_in = 0;
+		#100;
+		in1 = 8'd240; in2 = 8'd16; c_in = 1;
 	end
       
 endmodule

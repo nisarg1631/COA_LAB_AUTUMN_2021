@@ -18,7 +18,8 @@ module RippleCarryAdder_8bit(
     output c_out
     );
 
-	wire [6:0] carry;
+	wire [6:0] carry; // carry wire bus for internal carries
+	
 	// cascade 8 FullAdders using carry wire
 	FullAdder fa1(in1[0], in2[0], c_in, sum[0], carry[0]);
    FullAdder fa2(in1[1], in2[1], carry[0], sum[1], carry[1]);
