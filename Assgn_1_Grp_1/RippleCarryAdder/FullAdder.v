@@ -6,7 +6,7 @@
     Problem Number: 1 Ripple Carry Adder
     Semester Number: 5
     Group Number: 1 
-    Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)
+    Group Members: Animesh Jha(19CS10010), Nisarg Upadhyaya (19CS30031)
 */
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -32,9 +32,9 @@ module FullAdder(
 	 
     wire carry1,carry2,temp_sum;
     
-	 HalfAdder ha1(in1, in2, temp_sum, carry1);
-    HalfAdder ha2(temp_sum, c_in, sum, carry2);
-    or gate1(c_out, carry1, carry2);
+	 HalfAdder ha1(in1, in2, temp_sum, carry1); // temp_sum = in1 ^ in2, carry1 = in1 & in2
+    HalfAdder ha2(temp_sum, c_in, sum, carry2); // sum = temp_sum ^ c_in = in1 ^ in2 ^ c_in, carry2 = temp_sum & c_in = (in1 ^ in2) & c_in
+    or gate1(c_out, carry1, carry2); // c_out = carry1 | carry2 = (in1 & in2) | ((in1 ^ in2) & c_in)
 
 
 endmodule
