@@ -89,5 +89,8 @@ smol_int_err:
     # will now go to end_program
 
 end_program:
+    li      $v0, 4          # add newline
+    la      $a0, newline
+    syscall
     li      $v0, 10
     syscall

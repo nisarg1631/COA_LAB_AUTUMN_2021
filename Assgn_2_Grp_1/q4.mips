@@ -1,6 +1,6 @@
 ###############################################################################
     # Assignment Number: 2
-    # Problem Number: 3 
+    # Problem Number: 4
     # Semester Number: 5
     # Group Number: 1 
     # Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)
@@ -30,7 +30,7 @@ newline:
 #   running_sum:   $s2
 
 main:
-    li      $v0, 4          # issue prompt
+    li      $v0, 4          # issue prompt for input
     la      $a0, prompt
     syscall
 
@@ -38,7 +38,7 @@ main:
     syscall
     move    $s0, $v0
 
-    # check if n is a positive integer greater 9 
+    # check if n is a positive integer
     # if not, issue error message and terminate program
     blez    $s0, neg_int_err
 
@@ -67,10 +67,10 @@ loop:
     # check if n%i is 0
     div     $t0, $s0, $s1   # temp = floor(n/i)
     mul     $t0, $t0, $s1   # temp = i*floor(n/i)
-    sub     $t0, $s0, $t0   # temp = n- temp  , temp is basically n%i
+    sub     $t0, $s0, $t0   # temp = n-temp, temp is basically n%i
     
     # if yes, add i to running_sum
-    beqz     $t0, add_to_run_sum    # if temp == 0, => n%i==0 then n is divisible by i
+    beqz     $t0, add_to_run_sum    # if temp == 0 => n%i==0 then n is divisible by i
     
     addi    $s1, $s1, 1  # i++
     j       loop        # loop
@@ -98,14 +98,12 @@ print_pos_result:
 neg_int_err:
     li      $v0, 4          # prints error n<=0
     la      $a0, neg_int_err
-    syscall
-    j end    
-
+    syscall  
+    # will now go to end_program
+    
 end:
     li      $v0, 4          # add newline
     la      $a0, newline
     syscall
     li      $v0, 10         # terminate program
     syscall
-
-

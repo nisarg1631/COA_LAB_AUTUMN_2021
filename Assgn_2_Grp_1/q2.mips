@@ -29,7 +29,7 @@ newline:
 #   g:   $s2
 
 main:
-    li      $v0, 4          # issue prompt
+    li      $v0, 4          # issue input prompt
     la      $a0, prompt
     syscall
 
@@ -37,7 +37,7 @@ main:
     syscall
     move    $s0, $v0
 
-    li      $v0, 4          # issue prompt
+    li      $v0, 4          # issue input prompt
     la      $a0, prompt
     syscall
 
@@ -75,14 +75,17 @@ return_gcd:
     li      $v0, 1           # print gcd
     move      $a0, $s2
     syscall
-
-    li      $v0, 10         # terminate the program
-    syscall
+    j end
 
 neg_inp:
-    li      $v0, 4          # issue prompt
+    li      $v0, 4          # issue erro prompt
     la      $a0, neg_int_err
     syscall
+    # will now go to end_program
 
-    li      $v0, 10         # terminate the program
+end:
+    li      $v0, 4          # add newline
+    la      $a0, newline
+    syscall
+    li      $v0, 10         # terminate program
     syscall
