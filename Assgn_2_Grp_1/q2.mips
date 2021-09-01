@@ -15,7 +15,7 @@ prompt:
 result:
     .asciiz "The gcd of the two numbers is: "
 neg_int_err:
-    .asciiz "Error: Negative integer entered, terminating the program "
+    .asciiz "Error: Negative integer entered, terminating the program."
 newline:
     .asciiz "\n"
 

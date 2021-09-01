@@ -13,9 +13,9 @@
 prompt:
     .asciiz "Please enter a positive integer: "
 pos_result:
-    .asciiz "The given number is perfect: "
+    .asciiz "The given number is perfect."
 neg_result:
-    .asciiz "The given number is NOT perfect: "
+    .asciiz "The given number is NOT perfect."
 neg_error:
     .asciiz "Error: Non positive integer entered, terminating the program."
 newline:
