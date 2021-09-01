@@ -31,6 +31,7 @@ module FullAdderTestbench;
 	);
 
 	initial begin
+		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, c_out = %d", in1, in2, c_in, sum, c_out);
 		// Initialize Inputs
 		in1 = 0; in2 = 0; c_in = 0;
 		#100;
@@ -47,9 +48,6 @@ module FullAdderTestbench;
 		in1 = 1; in2 = 1; c_in = 0;
 		#100;
 		in1 = 1; in2 = 1; c_in = 1;
-        
-		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, c_out = %d", in1, in2, c_in, sum, c_out);
-
 	end
       
 endmodule

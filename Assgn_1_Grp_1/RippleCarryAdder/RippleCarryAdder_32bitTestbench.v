@@ -31,15 +31,17 @@ module RippleCarryAdder_32bitTestbench;
 	);
 
 	initial begin
+		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, c_out = %d", in1, in2, c_in, sum, c_out);
 		// Initialize Inputs
 		in1 = 12345678; in2 = 98765432; c_in = 0;
 		#100;
 		in1 = 12345678; in2 = 98765432; c_in = 1;
 		#100;
-		in1 = -12345678; in2 = 98765432; c_in = 0;
-        
-		$monitor ("in1 = %d, in2 = %d, c_in = %d, sum = %d, c_out = %d", in1, in2, c_in, sum, c_out);
-
+		in1 = 4294967290; in2 = 5; c_in = 0;
+		#100;
+		in1 = 4294967290; in2 = 6; c_in = 0;
+		#100;
+		in1 = 4294967290; in2 = 6; c_in = 1;
 	end
       
 endmodule
