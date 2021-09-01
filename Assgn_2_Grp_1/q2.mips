@@ -78,7 +78,7 @@ return_gcd:
     j end
 
 neg_inp:
-    li      $v0, 4          # issue erro prompt
+    li      $v0, 4          # issue error prompt
     la      $a0, neg_int_err
     syscall
     # will now go to end_program
