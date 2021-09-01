@@ -16,8 +16,8 @@ pos_result:
     .asciiz "The given number is perfect: "
 neg_result:
     .asciiz "The given number is NOT perfect: "
-neg_int_err:
-    .asciiz "Error: Non positive integer entered, terminating the program "
+neg_error:
+    .asciiz "Error: Non positive integer entered, terminating the program."
 newline:
     .asciiz "\n"
 .text
@@ -28,6 +28,7 @@ newline:
 #   n:   $s0
 #   i:   $s1 <- divisor
 #   running_sum:   $s2
+#   temp: $t0, to store n%i
 
 main:
     li      $v0, 4          # issue prompt for input
@@ -42,7 +43,7 @@ main:
     # if not, issue error message and terminate program
     blez    $s0, neg_int_err
 
-    # write the following psuedocode to mips
+    # write the following psuedocode in mips
     # running_sum=1 
     # for (int i=2;i<n;i++)
     # {
@@ -53,7 +54,7 @@ main:
     # }   
     # if(running_sum == n)
     # {
-    #     print "The given number is perfect: ";
+    #     print "The given number is perfect.";
     # }
     
     li     $s1, 2          # initialize i to 2
@@ -97,10 +98,10 @@ print_pos_result:
 
 neg_int_err:
     li      $v0, 4          # prints error n<=0
-    la      $a0, neg_int_err
+    la      $a0, neg_error
     syscall  
     # will now go to end_program
-    
+
 end:
     li      $v0, 4          # add newline
     la      $a0, newline
