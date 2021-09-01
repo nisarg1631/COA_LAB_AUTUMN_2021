@@ -17,7 +17,7 @@ prime_result:
 composite_result:
     .asciiz "The number is composite."
 small_error:
-    .asciiz "Error: Integer < 10 entered, terminating the program "
+    .asciiz "Error: Integer < 10 entered, terminating the program."
 newline:
     .asciiz "\n"
 
@@ -28,10 +28,10 @@ newline:
 # program variables
 #   n:   $s0
 #   i:   $s1
-#   temp: $t0
+#   temp: $t0, to store n%i
 
 main:
-    li      $v0, 4          # issue prompt
+    li      $v0, 4          # issue input prompt
     la      $a0, prompt
     syscall
 
@@ -39,11 +39,11 @@ main:
     syscall
     move    $s0, $v0
 
-    # check if n is a positive integer greater 9 
+    # check if n is a positive integer greater than 9 
     # if not, issue error message and terminate program
     blt    $s0, 10, smol_int_err
 
-    # write the following psuedocode to mips
+    # write the following psuedocode in mips
     # for (int i=2;i<n;i++)
     # {
     #     if(n%i==0)
@@ -83,7 +83,7 @@ iscomp:
     j      end_program   
 
 smol_int_err:
-    li      $v0, 4          # issue prompt
+    li      $v0, 4          # issue error prompt
     la      $a0, small_error
     syscall
     # will now go to end_program
