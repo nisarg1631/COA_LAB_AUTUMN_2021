@@ -11,12 +11,12 @@
 
 # program output text constants
 prompt:
-    .asciiz "Please enter a positive integer greater than 10 "
+    .asciiz "Please enter a positive integer greater than or equal to 10:  "
 prime_result:
-    .asciiz "The number is a prime"
+    .asciiz "The number is prime."
 composite_result:
-    .asciiz "The number is a composite"
-smol_int_err:
+    .asciiz "The number is composite."
+small_error:
     .asciiz "Error: Integer < 10 entered, terminating the program "
 newline:
     .asciiz "\n"
@@ -41,7 +41,7 @@ main:
 
     # check if n is a positive integer greater 9 
     # if not, issue error message and terminate program
-    blt    $s0,10,smol_int_err
+    blt    $s0, 10, smol_int_err
 
     # write the following psuedocode to mips
     # for (int i=2;i<n;i++)
@@ -70,21 +70,21 @@ loop:
 
 isprime:
     # print(n is prime)
-    li      $v0, 1
+    li      $v0, 4
     la      $a0, prime_result
     syscall
     j       end_program
 
 iscomp:
     # print(n is composite)
-    li      $v0, 1
+    li      $v0, 4
     la      $a0, composite_result
     syscall
     j      end_program   
 
 smol_int_err:
     li      $v0, 4          # issue prompt
-    la      $a0, smol_int_err
+    la      $a0, small_error
     syscall
     # will now go to end_program
 
