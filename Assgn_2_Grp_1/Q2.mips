@@ -55,21 +55,16 @@ main:
 
 gcd_loop:
     
-    # set gcd = a 
-    move $s2, $s0
+    move $s2, $s0   # set gcd = a 
 
-    # check if b is 0
-    beqz $s1, return_gcd
+    beqz $s1, return_gcd    # check if b is 0
 
-    # check if a>b  then a = a-b
-    bgt $s0, $s1, a_gt_b
-    # else b = b-a
-    sub $s1, $s1, $s0
+    bgt $s0, $s1, a_gt_b    # check if a>b  then a = a-b
+    sub $s1, $s1, $s0   # else b = b-a
     j gcd_loop
     
 a_gt_b:
-    # a = a-b
-    sub $s0, $s0, $s1
+    sub $s0, $s0, $s1   # a = a-b
     j gcd_loop
 
 return_gcd:
