@@ -1,0 +1,89 @@
+###############################################################################
+    # Assignment Number: 2
+    # Problem Number: 2 
+    # Semester Number: 5
+    # Group Number: 1 
+    # Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)
+###############################################################################
+
+.globl  main
+.data
+
+# program output text constants
+prompt:
+    .asciiz "Please enter a positive integer: "
+result:
+    .asciiz "The gcd of the two numbers is: "
+neg_int_err:
+    .asciiz "Error: Negative integer entered, terminating the program "
+newline:
+    .asciiz "\n"
+
+.text
+
+# main program
+#
+# program variables
+#   a:   $s0
+#   b:   $s1
+#   g:   $s2
+
+main:
+    li      $v0, 4          # issue prompt
+    la      $a0, prompt
+    syscall
+
+    li      $v0, 5          # get a from user
+    syscall
+    move    $s0, $v0
+
+    li      $v0, 5          # get b from user
+    syscall
+    move    $s1, $v0
+
+    # check if a is positive
+    bltz    $s0, neg_inp
+    # check if b is positive
+    bltz    $s1, neg_inp
+
+    add $s2, $s1, $zero    # default value of gcd = b
+    beqz $s0, return_gcd
+
+gcd_loop:
+    
+    # check if b is 0
+    beqz $s1, return_gcd
+
+    # set gcd = a 
+    move $s2, $s0
+
+    # check if a>b  then a = a-b
+    bgt $s0, $s1, a_gt_b
+    # else b = b-a
+    sub $s1, $s1, $s0
+    j gcd_loop
+    
+a_gt_b:
+    # a = a-b
+    sub $s0, $s0, $s1
+    j gcd_loop
+
+return_gcd:
+    li      $v0, 4          # print result string
+    la      $a0, result
+    syscall
+    
+    li      $v0, 4           # print gcd
+    move      $a0, $s2
+    syscall
+
+    li      $v0, 10         # terminate the program
+    syscall
+
+neg_inp:
+    li      $v0, 4          # issue prompt
+    la      $a0, neg_int_err
+    syscall
+
+    li      $v0, 10         # terminate the program
+    syscall
