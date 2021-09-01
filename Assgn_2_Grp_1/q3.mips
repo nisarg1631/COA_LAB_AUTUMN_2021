@@ -1,0 +1,93 @@
+###############################################################################
+    # Assignment Number: 2
+    # Problem Number: 3
+    # Semester Number: 5
+    # Group Number: 1 
+    # Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)
+###############################################################################
+
+.globl  main
+.data
+
+# program output text constants
+prompt:
+    .asciiz "Please enter a positive integer greater than 10 "
+prime_result:
+    .asciiz "The number is a prime"
+composite_result:
+    .asciiz "The number is a composite"
+smol_int_err:
+    .asciiz "Error: Integer < 10 entered, terminating the program "
+newline:
+    .asciiz "\n"
+
+.text
+
+# main program
+#
+# program variables
+#   n:   $s0
+#   i:   $s1
+#   temp: $t0
+
+main:
+    li      $v0, 4          # issue prompt
+    la      $a0, prompt
+    syscall
+
+    li      $v0, 5          # get n from user
+    syscall
+    move    $s0, $v0
+
+    # check if n is a positive integer greater 9 
+    # if not, issue error message and terminate program
+    blt    $s0,10,smol_int_err
+
+    # write the following psuedocode to mips
+    # for (int i=2;i<n;i++)
+    # {
+    #     if(n%i==0)
+    #     {
+    #         print(i is composite)
+    #         goto end
+    #     }
+    # }   
+    # print(n is prime)
+    # goto end
+    
+    li      $s1, 2         # i = 2
+loop:
+    bge    $s1,$s0, isprime   # if i>=n, break and goto prime result
+
+    div     $t0, $s0, $s1   # temp = floor(n/i)
+    mul     $t0, $t0, $s1   # temp = i*floor(n/i)
+    sub     $t0, $s0, $t0   # temp = n- temp  , temp is basically n%i
+    
+    beqz     $t0, iscomp    # if temp == 0, => n%i==0 then n is composite
+
+    addi    $s1, $s1, 1  # i++
+    j       loop        # loop
+
+isprime:
+    # print(n is prime)
+    li      $v0, 1
+    la      $a0, prime_result
+    syscall
+    j       end_program
+
+iscomp:
+    # print(n is composite)
+    li      $v0, 1
+    la      $a0, composite_result
+    syscall
+    j      end_program   
+
+smol_int_err:
+    li      $v0, 4          # issue prompt
+    la      $a0, smol_int_err
+    syscall
+    # will now go to end_program
+
+end_program:
+    li      $v0, 10
+    syscall
