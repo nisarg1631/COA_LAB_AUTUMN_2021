@@ -1,0 +1,145 @@
+###############################################################################
+    # Assignment Number: 3
+    # Problem Number: 1
+    # Semester Number: 5
+    # Group Number: 1 
+    # Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)
+###############################################################################
+
+.globl  main
+.data
+
+# program output text constants
+prompt1:
+    .asciiz "Enter first number: "
+prompt2:
+    .asciiz "Enter second number: "
+response:
+    .asciiz "Product of the two numbers are: "
+out_of_range_err:
+    .asciiz "Error: Number(s) entered is(are) out of range.\n"
+
+.text
+
+# main program
+#
+# program variables
+#   n1:   $s0
+#   n2:   $s1
+#   product:    $s2
+
+main:
+    li      $v0, 4          # issue input prompt
+    la      $a0, prompt1
+    syscall
+
+    li      $v0, 5          # get a from user
+    syscall
+    move    $s0, $v0
+
+    li      $v0, 4          # issue input prompt
+    la      $a0, prompt2
+    syscall
+
+    li      $v0, 5          # get b from user
+    syscall
+    move    $s1, $v0
+
+    # check if n1 is in range
+    blt     $s0, -32768, out_of_range
+    bgt     $s0, 32767, out_of_range
+    # check if n2 is in range
+    blt     $s1, -32768, out_of_range
+    bgt     $s1, 32767, out_of_range
+
+    # move n1 and n2 to $a0 and $a1
+    move    $a0, $s0
+    move    $a1, $s1
+    # call booths multiplication procedure
+    jal     multiply_booth
+
+    # store the returned value in $s2
+    move    $s2, $v0
+
+    # print the product
+    li      $v0, 4
+    la      $a0, response
+    syscall
+
+    li      $v0, 1
+    move    $a0, $s2
+    syscall
+
+    # branch to end
+    b		end
+    
+out_of_range:
+    li      $v0, 4          # issue error prompt
+    la      $a0, out_of_range_err
+    syscall
+
+end:
+    li      $v0, 10         # terminate program
+    syscall
+
+# booths multiplication procedure
+# 
+# procedure variables
+#   M:      $a0
+#   Q:      $a1
+#   Q-1:    $t0
+#   A:      $t1
+#   n:      $t2
+
+multiply_booth:
+    # initialise Q-1, A and n
+    move 	$t0, $zero
+    move 	$t1, $zero
+    li      $t2, 32
+
+multiply_loop:
+    # extract Q0 in $t3
+    andi    $t3, $a1, 1
+    # set t3 = t3 XOR Q-1 = Q0 XOR Q-1
+    xor     $t3, $t3, $t0
+    # branch to case_check if $t3 is non-zero, means exactly one of Q0 and Q-1 is 1
+    bnez	$t3, case_check
+    # else continue to right_shift
+    
+right_shift:
+    # arithmetic right shift of AQQ-1
+    andi    $t3, $a1, 1     # extract Q0 in $t3
+    move    $t0, $t3        # set Q-1 to Q0
+    srl     $a1, $a1, 1     # logically shift Q right by 1 bit
+    andi    $t3, $t1, 1     # extract A0 in $t3
+    sll     $t3, $t3, 31    # shift left by 31 bits, this step and the last one together put the LSB of A in MSB of $t3
+    or      $a1, $a1, $t3   # this step transfers the MSB of $t3 to Q
+    sra     $t1, $t1, 1     # arithmetic shift right A by 1 bit
+
+    # n <- n-1
+    addi	$t2, $t2, -1
+
+    # if n > 0 then loop
+    bgtz    $t2, multiply_loop
+
+    # if n = 0 then return after storing return value in $v0
+    move 	$v0, $a1
+    jr		$ra
+
+case_check:
+    # coming here means exactly one of Q0 and Q-1 is 1
+    # if Q-1 is 1 branch to case_01
+    bnez    $t0, case_01
+    # else continue to case_10
+
+case_10:
+    sub		$t1, $t1, $a0		# A <- A - M
+    
+    # branch to right shift
+    b   right_shift
+
+case_01:
+    add		$t1, $t1, $a0		# A <- A + M
+
+    # branch to right shift
+    b   right_shift
