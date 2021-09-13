@@ -19,6 +19,10 @@ prompt_k:
 error_big_k:
     .asciiz "ERROR: k entered greater than the length of the array"
 .text
+sorting_done:
+    .asciiz "Sorting of array done"
+prompt_k_larg:
+    .asciiz "K th largest number is: "
 
 # main program
 #
@@ -27,6 +31,7 @@ error_big_k:
 #   k:   $s1
 #   n: $s2
 #   i:  $t0
+#   n-k: $t1
 
 main:
     # read array from user
@@ -36,10 +41,25 @@ main:
 
     jal input_k
 
-
+    move $a1, $s2  # store N in $a1
     jal sort_array_func
 
-    jal find_k_largest 
+    move $a1,$s2    # store N in $a1
+    jal print_array
+
+    li      $v0, 4          # print ans
+    la      $a0, prompt_k_larg
+    syscall
+
+    sub $t1,$s2,$s1    
+    sll $t1,$t1,2
+    lw $t2, array($t1)
+
+    li      $v0, 1      
+    move    $a0, $t2
+    syscall
+
+    j end
 
 read_func:
     li $t0,0
@@ -72,8 +92,8 @@ input_k:
     jr $ra 
 
 
+# not i have switched i and j from that given in the pseudocode, i is used outside and j inside
 # Registers:
-#   $a0: base address
 #   $a1: N
 #   $t0: i
 #   $t1: j
@@ -81,8 +101,72 @@ input_k:
 #   $t3: value of x (current A[i])
 #   $t4: offset
 sort_array_func:
+    li $t0,1
+    j for_outer_start
 
+for_outer_start:
+    blt $t0,$a2,for_outer_body # i < n then go to body
 
+    li      $v0, 4          # say sorting is done
+    la      $a0, sorting_done
+    syscall
+    jr $ra                      #return 
+
+for_outer_body:
+    sll $t4, $t0, 2    # scale index i to offset
+    lw $t3,array($t4)  # store a[i] in x
+    addi $t1,$t0,-1    # j = i-1
+    j while_inner_start  
+
+while_inner_start:
+    blt $t1,$zero,while_inner_end # if j<0 break (same as checking i>0)
+    sll $t4,$t1,2              # scale j
+    lw $t2,array($t4)           # store A[j]
+    bgt $t2,$t3,while_inner_body   # is A[j]>x 
+
+while_inner_body:
+    sll  $t4, $t1, 2      # scale j
+    lw $t2,array($t4)     # load A[j]
+    addi $t4,$t4,4        # j = j+1
+    sw $t2, array($t4)      # save A[j+1]=A[j]
+    addi $t1,$t1,-1        # j=j-1
+
+while_inner_end:
+    add $t4,$t1,1         # j =j +1
+    sll $t4,$t4,2         # scale j+1
+    sw $t3,array($t4)     #  A[j+1] = x
+    add $t0, $t0, 1       # i=i+1
+
+# Registers:
+#   $a1: N 
+#   $t0: i
+#   $t2: 4*i 
+print_array:
+    li $v0,0
+    li $t0,0
+    li $t2,0
+print_for_loop:
+    bge $t0,$a1,func_end
+
+    lw $t1,array($t2)
+    addi $t2,$t2,4
+    
+    # syscall to print value
+    li      $v0, 1      
+    move    $a0, $t2
+    syscall
+
+    # syscall number for printing space
+    li      $a0, 32
+    li      $v0, 11  
+    syscall    
+    addi $t0,$t0,1
+    j print_for_loop
+print_func_end:
+    li      $v0, 4          # add newline
+    la      $a0, newline
+    syscall
+    jr $ra  
 
 big_k:
     li      $v0, 4          # issue error prompt
@@ -96,3 +180,5 @@ end:
     syscall
     li      $v0, 10         # terminate program
     syscall
+
+
