@@ -16,20 +16,26 @@ prompt_arr:
     .asciiz "Please enter an integer: "
 prompt_k:
     .asciiz "Enter the value of k: "
+error_big_k:
+    .asciiz "ERROR: k entered greater than the length of the array"
 .text
 
 # main program
 #
 # program variables
-#   arr:   $s0
+
 #   k:   $s1
+#   n: $s2
 #   i:  $t0
 
 main:
     # read array from user
+    li $s2,10
+
     jal read_func
 
     jal input_k
+
 
     jal sort_array_func
 
@@ -62,7 +68,31 @@ input_k:
     li $v0,5
     syscall
     move $s1, $v0
+    bge $s1,$s2,big_k
     jr $ra 
 
 
+# Registers:
+#   $a0: base address
+#   $a1: N
+#   $t0: i
+#   $t1: j
+#   $t2: value of A[i] or A[j]
+#   $t3: value of x (current A[i])
+#   $t4: offset
+sort_array_func:
 
+
+
+big_k:
+    li      $v0, 4          # issue error prompt
+    la      $a0, error_big_k
+    syscall
+    # will now go to end_program
+
+end:
+    li      $v0, 4          # add newline
+    la      $a0, newline
+    syscall
+    li      $v0, 10         # terminate program
+    syscall
