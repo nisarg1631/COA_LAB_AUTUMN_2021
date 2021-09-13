@@ -1,0 +1,37 @@
+###############################################################################
+    # Assignment Number: 3
+    # Problem Number: 3
+    # Semester Number: 5
+    # Group Number: 1 
+    # Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)
+###############################################################################
+
+.globl  main
+.data
+
+# program output text constants
+array: 
+    .space 40    #10 element integer array
+prompt_arr:
+    .asciiz "Please enter an integer: "
+prompt_k:
+    .asciiz "Enter the value of k: "
+error_big_k:
+    .asciiz "ERROR: k entered greater than the length of the array"
+sorting_done:
+    .asciiz "Sorting of array done"
+prompt_k_larg:
+    .asciiz "K th largest number is: "
+
+.text
+
+# main program
+#
+# program variables
+#
+#   k:   $s1
+#   n: $s2
+#   i:  $t0
+#   n-k: $t1
+
+main:
