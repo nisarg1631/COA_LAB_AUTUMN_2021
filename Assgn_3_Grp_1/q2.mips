@@ -18,16 +18,19 @@ prompt_k:
     .asciiz "Enter the value of k: "
 error_big_k:
     .asciiz "ERROR: k entered greater than the length of the array"
-.text
 sorting_done:
     .asciiz "Sorting of array done"
 prompt_k_larg:
     .asciiz "K th largest number is: "
+newline:
+    .asciiz "\n"
+
+.text
 
 # main program
 #
 # program variables
-
+#
 #   k:   $s1
 #   n: $s2
 #   i:  $t0
@@ -64,7 +67,6 @@ main:
 read_func:
     li $t0,0
     b read_loop
-    jr $ra 
 
 read_loop:        
     
@@ -77,8 +79,8 @@ read_loop:
     sw $v0,array($t0)
 
     add $t0,$t0,4
-    beq $t0,40,read_func
-    j read_loop
+    bne $t0,40,read_loop
+    jr $ra 
     
 input_k:
     li $v0,4
@@ -146,14 +148,14 @@ print_array:
     li $t0,0
     li $t2,0
 print_for_loop:
-    bge $t0,$a1,func_end
+    bge $t0,$a1,print_func_end
 
     lw $t1,array($t2)
     addi $t2,$t2,4
     
     # syscall to print value
     li      $v0, 1      
-    move    $a0, $t2
+    move    $a0, $t1
     syscall
 
     # syscall number for printing space
