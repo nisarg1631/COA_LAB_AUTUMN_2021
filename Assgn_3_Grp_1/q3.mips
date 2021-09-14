@@ -10,18 +10,10 @@
 .data
 
 # program output text constants
-array: 
-    .space 40    #10 element integer array
-prompt_arr:
-    .asciiz "Please enter an integer: "
-prompt_k:
-    .asciiz "Enter the value of k: "
-error_big_k:
-    .asciiz "ERROR: k entered greater than the length of the array"
-sorting_done:
-    .asciiz "Sorting of array done"
-prompt_k_larg:
-    .asciiz "K th largest number is: "
+prompt:
+    .asciiz "Enter four positive integers m, n, a and r:\n"
+newline:
+    .asciiz "\n"
 
 .text
 
@@ -29,9 +21,31 @@ prompt_k_larg:
 #
 # program variables
 #
-#   k:   $s1
-#   n: $s2
-#   i:  $t0
-#   n-k: $t1
+#  m: $s0
+#  n: $s1
+#  a: $s2
+#  r: $s3
 
 main:
+    li      $v0, 4          # issue input prompt
+    la      $a0, prompt
+    syscall
+
+    li      $v0, 5          # get m from user
+    syscall
+    move    $s0, $v0
+
+    li      $v0, 5          # get n from user
+    syscall
+    move    $s1, $v0
+
+    li      $v0, 5          # get a from user
+    syscall
+    move    $s2, $v0
+
+    li      $v0, 5          # get r from user
+    syscall
+    move    $s3, $v0
+
+    li      $v0, 10         # terminate program
+    syscall
