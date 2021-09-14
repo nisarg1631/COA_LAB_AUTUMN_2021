@@ -19,7 +19,7 @@ prompt_k:
 error_big_k:
     .asciiz "ERROR: k entered greater than the length of the array"
 sorting_done:
-    .asciiz "Sorting of array done"
+    .asciiz "Sorting of array done: "
 prompt_k_larg:
     .asciiz "K th largest number is: "
 newline:
@@ -44,14 +44,16 @@ main:
 
     jal input_k
 
+    la $a0,array # load array address in $a0
     move $a1, $s2  # store N in $a1
     jal sort_array_func
 
+    la $a0,array # load array address in $a0
     move $a1,$s2    # store N in $a1
     jal print_array
 
     li      $v0, 4          # print ans
-    la      $a0, prompt_k_larg
+    la      $a0, prompt_k_larg 
     syscall
 
     sub $t1,$s2,$s1    
@@ -96,6 +98,7 @@ input_k:
 
 # not i have switched i and j from that given in the pseudocode, i is used outside and j inside
 # Registers:
+#   $a0: array
 #   $a1: N
 #   $t0: i
 #   $t1: j
@@ -106,40 +109,49 @@ sort_array_func:
     li $t0,1
     j for_outer_start
 
-for_outer_start:
-    blt $t0,$a2,for_outer_body # i < n then go to body
+for_outer_body:
+    sll $t4, $t0, 2    # scale index i to offset
+    add $t4, $a0,$t4
+    lw $t3,0($t4)  # store a[i] in x
+    addi $t1,$t0,-1    # j = i-1
+    j while_inner_start  
 
+
+while_inner_body:
+    sll  $t4, $t1, 2      # scale j
+    add  $t4, $a0, $t4
+    lw $t2,0($t4)     # load A[j]
+    addi $t4,$t4,4        # j = j+1
+    sw $t2, 0($t4)      # save A[j+1]=A[j]
+    addi $t1,$t1,-1        # j=j-1
+
+while_inner_start:
+    blt $t1,$zero,while_inner_end # if j<0 break (same as checking i>0)
+    sll $t4,$t1,2              # scale j
+    add $t4,$a0,$t4
+    lw $t2,0($t4)           # store A[j]
+    bgt $t2,$t3,while_inner_body   # is A[j]>x 
+
+
+
+while_inner_end:
+    add $t4,$t1,1         # j =j +1
+    sll $t4,$t4,2         # scale j+1
+    add $t4,$a0,$t4
+    sw $t3,0($t4)     #  A[j+1] = x
+    addi $t0, $t0, 1       # i=i+1
+
+for_outer_start:
+    blt $t0,$a1,for_outer_body # i < n then go to body
     li      $v0, 4          # say sorting is done
     la      $a0, sorting_done
     syscall
     jr $ra                      #return 
 
-for_outer_body:
-    sll $t4, $t0, 2    # scale index i to offset
-    lw $t3,array($t4)  # store a[i] in x
-    addi $t1,$t0,-1    # j = i-1
-    j while_inner_start  
 
-while_inner_start:
-    blt $t1,$zero,while_inner_end # if j<0 break (same as checking i>0)
-    sll $t4,$t1,2              # scale j
-    lw $t2,array($t4)           # store A[j]
-    bgt $t2,$t3,while_inner_body   # is A[j]>x 
-
-while_inner_body:
-    sll  $t4, $t1, 2      # scale j
-    lw $t2,array($t4)     # load A[j]
-    addi $t4,$t4,4        # j = j+1
-    sw $t2, array($t4)      # save A[j+1]=A[j]
-    addi $t1,$t1,-1        # j=j-1
-
-while_inner_end:
-    add $t4,$t1,1         # j =j +1
-    sll $t4,$t4,2         # scale j+1
-    sw $t3,array($t4)     #  A[j+1] = x
-    add $t0, $t0, 1       # i=i+1
 
 # Registers:
+#   $a0: array
 #   $a1: N 
 #   $t0: i
 #   $t2: 4*i 
