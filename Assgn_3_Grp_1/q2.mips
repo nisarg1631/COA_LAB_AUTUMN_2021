@@ -92,7 +92,7 @@ input_k:
     li $v0,5
     syscall
     move $s1, $v0
-    bge $s1,$s2,big_k
+    bgt $s1,$s2,big_k
     jr $ra 
 
 
