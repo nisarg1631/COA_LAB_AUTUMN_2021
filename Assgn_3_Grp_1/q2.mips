@@ -18,6 +18,8 @@ prompt_k:
     .asciiz "Enter the value of k: "
 error_big_k:
     .asciiz "ERROR: k entered greater than the length of the array"
+error_smol_k:
+    .asciiz "ERROR: k entered is zero or negative"
 sorting_done:
     .asciiz "Sorting of array done: "
 prompt_k_larg:
@@ -38,62 +40,63 @@ newline:
 
 main:
     # read array from user
-    li $s2,10
+    li $s2,10          # n = 10
 
-    jal read_func
+    jal read_func     # read array from user
 
-    jal input_k
+    jal input_k       # read k from user
 
     la $a0,array # load array address in $a0
     move $a1, $s2  # store N in $a1
-    jal sort_array_func
+    jal sort_array_func       # sort array
 
     la $a0,array # load array address in $a0
     move $a1,$s2    # store N in $a1
-    jal print_array
+    jal print_array     # print array
 
     li      $v0, 4          # print ans
-    la      $a0, prompt_k_larg 
-    syscall
+    la      $a0, prompt_k_larg # load prompt_k_larg in $a0
+    syscall                  # print prompt_k_larg
 
-    sub $t1,$s2,$s1    
-    sll $t1,$t1,2
-    lw $t2, array($t1)
+    sub $t1,$s2,$s1    # n-k
+    sll $t1,$t1,2       # n-k * 4
+    lw $t2, array($t1)  # load kth largest number in $t2
 
-    li      $v0, 1      
-    move    $a0, $t2
-    syscall
+    li      $v0, 1      # print ans
+    move    $a0, $t2   # load kth largest number in $a0
+    syscall           # print kth largest number
 
-    j end
+    j end        # end program
 
 read_func:
-    li $t0,0
-    b read_loop
+    li $t0,0       # i = 0
+    b read_loop  # read loop
 
 read_loop:        
     
-    li $v0,4
-    la $a0,prompt_arr
-    syscall
+    li $v0,4      # read array element
+    la $a0,prompt_arr  # load prompt_arr in $a0
+    syscall         # print prompt_arr
     
-    li $v0,5
-    syscall
-    sw $v0,array($t0)
+    li $v0,5      # read array element
+    syscall       # read array element
+    sw $v0,array($t0)     # store array element in array[i]
 
-    add $t0,$t0,4
-    bne $t0,40,read_loop
-    jr $ra 
+    add $t0,$t0,4   # i++
+    bne $t0,40,read_loop # loop termination condition
+    jr $ra     # return
     
 input_k:
-    li $v0,4
-    la $a0,prompt_k
-    syscall
-    
-    li $v0,5
-    syscall
-    move $s1, $v0
-    bgt $s1,$s2,big_k
-    jr $ra 
+    li $v0,4         # read k
+    la $a0,prompt_k # load prompt_k in $a0
+    syscall       # print prompt_k  
+     
+    li $v0,5       # read k
+    syscall        # read k
+    move $s1, $v0  # store k in $s1
+    bgt $s1,$s2,big_k # check if k is greater than N
+    ble $s1,0,smol_k # check if k is less than 0
+    jr $ra        # return
 
 
 # not i have switched i and j from that given in the pseudocode, i is used outside and j inside
@@ -106,20 +109,20 @@ input_k:
 #   $t3: value of x (current A[i])
 #   $t4: offset
 sort_array_func:
-    li $t0,1
-    j for_outer_start
+    li $t0,1     # i = 1
+    j for_outer_start # for loop start
 
 for_outer_body:
     sll $t4, $t0, 2    # scale index i to offset
-    add $t4, $a0,$t4
+    add $t4, $a0,$t4  # add offset to array address
     lw $t3,0($t4)  # store a[i] in x
     addi $t1,$t0,-1    # j = i-1
-    j while_inner_start  
+    j while_inner_start   # while loop start
 
 
 while_inner_body:
     sll  $t4, $t1, 2      # scale j
-    add  $t4, $a0, $t4
+    add  $t4, $a0, $t4     # add offset to array address
     lw $t2,0($t4)     # load A[j]
     addi $t4,$t4,4        # j = j+1
     sw $t2, 0($t4)      # save A[j+1]=A[j]
@@ -128,23 +131,21 @@ while_inner_body:
 while_inner_start:
     blt $t1,$zero,while_inner_end # if j<0 break (same as checking i>0)
     sll $t4,$t1,2              # scale j
-    add $t4,$a0,$t4
+    add $t4,$a0,$t4        # add offset to array address
     lw $t2,0($t4)           # store A[j]
     bgt $t2,$t3,while_inner_body   # is A[j]>x 
-
-
 
 while_inner_end:
     add $t4,$t1,1         # j =j +1
     sll $t4,$t4,2         # scale j+1
-    add $t4,$a0,$t4
+    add $t4,$a0,$t4       # add offset to array address
     sw $t3,0($t4)     #  A[j+1] = x
     addi $t0, $t0, 1       # i=i+1
 
 for_outer_start:
     blt $t0,$a1,for_outer_body # i < n then go to body
     li      $v0, 4          # say sorting is done
-    la      $a0, sorting_done
+    la      $a0, sorting_done  # load sorting_done in $a0
     syscall
     jr $ra                      #return 
 
@@ -155,44 +156,50 @@ for_outer_start:
 #   $a1: N 
 #   $t0: i
 #   $t2: 4*i 
-print_array:
-    li $v0,0
-    li $t0,0
-    li $t2,0
+print_array: 
+    # li $v0,0    # print ans
+    li $t0,0    # i = 0
+    li $t2,0      # offset = 0
 print_for_loop:
-    bge $t0,$a1,print_func_end
+    bge $t0,$a1,print_func_end  # if i>=n break
 
-    lw $t1,array($t2)
-    addi $t2,$t2,4
+    lw $t1,array($t2)   # load array[i] in $t1
+    addi $t2,$t2,4    # offset = offset + 4
     
     # syscall to print value
-    li      $v0, 1      
-    move    $a0, $t1
-    syscall
+    li      $v0, 1      # print array[i]
+    move    $a0, $t1  # load array[i] in $a0
+    syscall        # print array[i]
 
     # syscall number for printing space
-    li      $a0, 32
-    li      $v0, 11  
-    syscall    
-    addi $t0,$t0,1
+    li      $a0, 32   # print space
+    li      $v0, 11   # print space
+    syscall     # print space
+    addi $t0,$t0,1  # i++
     j print_for_loop
 print_func_end:
     li      $v0, 4          # add newline
-    la      $a0, newline
-    syscall
-    jr $ra  
+    la      $a0, newline  # load newline in $a0
+    syscall   # print newline
+    jr $ra      # return
+
+smol_k:
+    li      $v0, 4          # issue error prompt
+    la      $a0, error_smol_k # load error_big_k in $a0
+    syscall               # print error_big_k
+    j end   # will now go to end_program
 
 big_k:
     li      $v0, 4          # issue error prompt
-    la      $a0, error_big_k
-    syscall
+    la      $a0, error_big_k # load error_big_k in $a0
+    syscall               # print error_big_k
     # will now go to end_program
 
 end:
     li      $v0, 4          # add newline
-    la      $a0, newline
-    syscall
+    la      $a0, newline   # load newline in $a0
+    syscall          # print newline
     li      $v0, 10         # terminate program
-    syscall
+    syscall         # terminate program
 
 
