@@ -19,7 +19,7 @@ prompt_k:
 error_big_k:
     .asciiz "ERROR: k entered greater than the length of the array"
 error_smol_k:
-    .asciiz "ERROR: k entered is negative"
+    .asciiz "ERROR: k entered is zero or negative"
 sorting_done:
     .asciiz "Sorting of array done: "
 prompt_k_larg:
@@ -95,7 +95,7 @@ input_k:
     syscall        # read k
     move $s1, $v0  # store k in $s1
     bgt $s1,$s2,big_k # check if k is greater than N
-    blt $s1,0,smol_k # check if k is less than 0
+    ble $s1,0,smol_k # check if k is less than 0
     jr $ra        # return
 
 
