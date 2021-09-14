@@ -14,6 +14,8 @@ prompt:
     .asciiz "Enter four positive integers m, n, a and r:\n"
 newline:
     .asciiz "\n"
+space:
+    .asciiz " "
 
 .text
 
@@ -25,8 +27,12 @@ newline:
 #  n: $s1
 #  a: $s2
 #  r: $s3
+#  matrix A base address: $s4
+#  matrix B base address: $s5
 
 main:
+    jal     initStack
+
     li      $v0, 4          # issue input prompt
     la      $a0, prompt
     syscall
@@ -47,5 +53,121 @@ main:
     syscall
     move    $s3, $v0
 
+    # allocate memory for A
+    mul     $a0, $s0, $s1   # $a0 = m*n
+    jal     mallocInStack   # call mallocInStack with argument m*n
+    move    $s4, $v0        # store return value, i.e. base address of A
+
+    # allocate memory for A
+    mul     $a0, $s0, $s1   # $a0 = m*n
+    jal     mallocInStack   # call mallocInStack with argument m*n
+    move    $s5, $v0        # store return value, i.e. base address of A
+
+    # fill A
+    li      $t0, 0          # offset = 0
+    li      $t1, 1          # multiplier = 1
+
+fillA:
+    mul     $t2, $s2, $t1   # $t2 = a*multiplier
+    mul     $t3, $t0, 4     # $t3 = 4*offset
+    add     $t3, $s4, $t3   # $t3 = base address of A + 4*offset
+    sw      $t2, 0($t3)     # store a*multiplier to the location A + 4*offset
+    addi    $t0, $t0, 1     # offset++
+    mul     $t1, $t1, $s3   # multiplier = multiplier*r
+    mul     $t2, $s0, $s1   # $t2 = m*n
+    blt		$t0, $t2, fillA	# if offset < m*n then loop
+
+    # print A
+    move    $a0, $s0
+    move    $a1, $s1
+    move    $a2, $s4
+    jal     printMatrix     # call print matrix with parameters m, n and A
+    
+
     li      $v0, 10         # terminate program
     syscall
+
+# print function
+#
+# program variables
+#
+# m: $a0
+# n: $a1
+# base address of matrix to print: $a2
+
+printMatrix:
+    li      $t0, 0          # offset = 0
+    li      $t1, 0          # column_index = 0
+
+printLoop:
+    mul     $t2, $t0, 4     # $t2 = 4*offset
+    add     $t2, $a2, $t2   # $t2 = base address of A + 4*offset
+    lw      $t2, 0($t2)     # load the value at A + 4*offset into $t2
+
+    move    $t3, $a0        # temporarily store m in $t3
+
+    li      $v0, 1          # print $t2
+    move    $a0, $t2
+    syscall
+
+    li      $v0, 4          # print space
+    la      $a0, space
+    syscall
+
+    move    $a0, $t3        # restore m in $a0
+
+    addi    $t0, $t0, 1             # offset++
+    addi    $t1, $t1, 1             # column_index++
+    blt     $t1, $a1, printLoop     # if column_index < n then loop else print newline
+
+    move    $t2, $a0        # temporarily store m in $t2
+    
+    li      $v0, 4          # print newline
+    la      $a0, newline
+    syscall
+    
+    li      $t1, 0          # reset column_index = 0
+
+    move    $a0, $t2        # restore m in $a0
+
+    mul     $t2, $a0, $a1       # $t2 = m*n
+    blt		$t0, $t2, printLoop	# if offset < m*n then loop else return
+
+    jr      $ra
+
+
+# initStack function
+#
+# program variables
+#
+# -
+
+initStack:
+    addi    $sp, $sp, -4    # make space for storing frame pointer
+    sw      $fp, 0($sp)     # store old frame pointer
+    move    $fp, $sp        # update frame pointer to the new base of stack
+    jr		$ra
+
+# malloc function
+#
+# program variables
+#
+# size: $a0
+# return base address: $v0
+
+mallocInStack:
+    mul     $t0, $a0, 4
+    sub		$sp, $sp, $t0   # sp = sp - (4*size), reserve space in stack
+    move    $v0, $sp        # store the base address in $v0
+    jr      $ra
+    
+# push function
+#
+# program variables
+#
+# n: $a0
+
+pushToStack:
+    addi    $sp, $sp, -4    # make space for storing the new element
+    sw      $a0, 0($sp)     # save the new element to stack
+    jr      $ra
