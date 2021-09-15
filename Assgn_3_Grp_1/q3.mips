@@ -10,8 +10,14 @@
 .data
 
 # program output text constants
-prompt:
+prompt1:
     .asciiz "Enter four positive integers m, n, a and r:\n"
+prompt2:
+    .asciiz "Matrix A:\n\n"
+prompt3:
+    .asciiz "Matrix B:\n\n"
+not_positive_prompt:
+    .asciiz "Please enter positive integers only.\n"
 newline:
     .asciiz "\n"
 space:
@@ -34,34 +40,38 @@ main:
     jal     initStack
 
     li      $v0, 4          # issue input prompt
-    la      $a0, prompt
+    la      $a0, prompt1
     syscall
 
     li      $v0, 5          # get m from user
     syscall
     move    $s0, $v0
+    blez    $s0, not_positive_error     # check m is positive
 
     li      $v0, 5          # get n from user
     syscall
     move    $s1, $v0
+    blez    $s1, not_positive_error     # check n is positive
 
     li      $v0, 5          # get a from user
     syscall
     move    $s2, $v0
+    blez    $s2, not_positive_error     # check a is positive
 
     li      $v0, 5          # get r from user
     syscall
     move    $s3, $v0
+    blez    $s3, not_positive_error     # check r is positive
 
     # allocate memory for A
     mul     $a0, $s0, $s1   # $a0 = m*n
     jal     mallocInStack   # call mallocInStack with argument m*n
     move    $s4, $v0        # store return value, i.e. base address of A
 
-    # allocate memory for A
+    # allocate memory for B
     mul     $a0, $s0, $s1   # $a0 = m*n
     jal     mallocInStack   # call mallocInStack with argument m*n
-    move    $s5, $v0        # store return value, i.e. base address of A
+    move    $s5, $v0        # store return value, i.e. base address of B
 
     # fill A
     li      $t0, 0          # offset = 0
@@ -77,13 +87,49 @@ fillA:
     mul     $t2, $s0, $s1   # $t2 = m*n
     blt		$t0, $t2, fillA	# if offset < m*n then loop
 
+    li      $v0, 4          # issue matrix A print prompt
+    la      $a0, prompt2
+    syscall
+
     # print A
     move    $a0, $s0
     move    $a1, $s1
     move    $a2, $s4
     jal     printMatrix     # call print matrix with parameters m, n and A
-    
 
+    # transpose A to B
+    move    $a0, $s0
+    move    $a1, $s1
+    move    $a2, $s4
+    move    $a3, $s5
+    jal     transposeMatrix # call transpose matrix with parameters m, n, A, and B
+
+    li      $v0, 4          # issue matrix B print prompt
+    la      $a0, prompt3
+    syscall
+
+    # print B
+    move    $a0, $s1
+    move    $a1, $s0
+    move    $a2, $s5
+    jal     printMatrix     # call print matrix with parameters n, m and B
+
+    # deallocate memory stored for 2 stacks
+    mul     $t0, $s0, $s1
+    mul     $t0, $t0, 4
+    add     $sp, $sp, $t0   # deallocate B
+    add     $sp, $sp, $t0   # deallocate A
+
+    b       end
+
+not_positive_error:
+    li      $v0, 4          # issue not positive prompt
+    la      $a0, not_positive_prompt
+    syscall
+
+end:
+    lw      $fp, 0($sp)     # restore frame pointer
+    addi    $sp, $sp, 4     # restore stack pointer
     li      $v0, 10         # terminate program
     syscall
 
@@ -133,8 +179,48 @@ printLoop:
     mul     $t2, $a0, $a1       # $t2 = m*n
     blt		$t0, $t2, printLoop	# if offset < m*n then loop else return
 
+    li      $v0, 4          # print an extra newline for clean output
+    la      $a0, newline
+    syscall
+
     jr      $ra
 
+# transpose function
+#
+# program variables
+#
+# m: $a0
+# n: $a1
+# base address of matrix A: $a2
+# base address of matrix B: $a3
+#
+# logic: to compute the transpose it accesses the values in A 
+# in column major manner and stores them in B in row major manner
+
+transposeMatrix:
+    li      $t0, 0          # row_index = 0
+    li      $t1, 0          # column_index = 0
+    li      $t2, 0          # offset = 0
+
+transposeLoop:
+    mul     $t3, $t0, $a1   # $t3 = row_index*n
+    add     $t3, $t3, $t1   # $t3 = column_index + (row_index*n)
+    mul     $t3, $t3, 4     # $t3 = 4*(column_index + (row_index*n))
+    add     $t3, $t3, $a2   # $t3 = base address of A + 4*(column_index + (row_index*n))
+    lw      $t3, 0($t3)     # load the value at A[row_index, column_index] in $t3
+    mul     $t4, $t2, 4     # $t4 = 4*offset
+    add     $t4, $t4, $a3   # $t4 = base address of B + 4*offset
+    sw      $t3, 0($t4)     # store the loaded value in B
+
+    addi    $t0, $t0, 1             # row_index++
+    addi    $t2, $t2, 1             # offset++
+    blt     $t0, $a0, transposeLoop # if row_index < m then loop else move to next column
+
+    addi    $t1, $t1, 1             # column_index++
+    li      $t0, 0                  # reset row_index = 0
+    blt     $t1, $a1, transposeLoop # if column_index < n then loop else return
+
+    jr      $ra    
 
 # initStack function
 #
