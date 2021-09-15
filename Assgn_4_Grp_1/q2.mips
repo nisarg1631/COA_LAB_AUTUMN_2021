@@ -1,0 +1,83 @@
+###############################################################################
+    # Assignment Number: 4
+    # Problem Number: 2
+    # Semester Number: 5
+    # Group Number: 1 
+    # Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)
+###############################################################################
+
+.globl  main
+.data
+
+# program output text constants
+prompt1:
+    .asciiz "Enter first number: "
+prompt2:
+    .asciiz "Enter second number: "
+response:
+    .asciiz "Product of the two numbers are: "
+out_of_range_err:
+    .asciiz "Error: Number(s) entered is(are) out of range.\n"
+
+.text
+
+# main program
+#
+# program variables
+#   n1:   $s0
+#   n2:   $s1
+#   product:    $s2
+
+main:
+    li      $v0, 4          # issue input prompt
+    la      $a0, prompt1
+    syscall
+
+    li      $v0, 5          # get a from user
+    syscall
+    move    $s0, $v0
+
+    li      $v0, 4          # issue input prompt
+    la      $a0, prompt2
+    syscall
+
+    li      $v0, 5          # get b from user
+    syscall
+    move    $s1, $v0
+
+    # check if n1 is in range
+    blt     $s0, -32768, out_of_range
+    bgt     $s0, 32767, out_of_range
+    # check if n2 is in range
+    blt     $s1, -32768, out_of_range
+    bgt     $s1, 32767, out_of_range
+
+    # move n1 and n2 to $a0 and $a1
+    move    $a0, $s0
+    move    $a1, $s1
+    # call booths multiplication procedure
+    jal     multiply_booth
+
+    # store the returned value in $s2
+    move    $s2, $v0
+
+    # print the product
+    li      $v0, 4
+    la      $a0, response
+    syscall
+
+    li      $v0, 1
+    move    $a0, $s2
+    syscall
+
+    # branch to end
+    b		end
+    
+out_of_range:
+    li      $v0, 4          # issue error prompt
+    la      $a0, out_of_range_err
+    syscall
+
+end:
+    li      $v0, 10         # terminate program
+    syscall
