@@ -110,12 +110,66 @@ recursive_search:
     jal     pushToStack
 
     move    $a0, $t1    # restore array address
+    li      $v0, -1     # default return value is -1
 
+    blt     $a2, $a1, recursive_search_return   # if end < start then return -1
+
+    sub     $t0, $a2, $a1   # $t0 = end - start
+    div		$t0, $t0, 3     # $t0 = (end - start) / 3
+    add     $t1, $a1, $t0   # $t1 = start + (end - start) / 3 = mid1
+    sub     $t2, $a2, $t0   # $t2 = end - (end - start) / 3 = mid2
+    
+    mul     $t3, $t1, 4     # $t3 = 4*mid1
+    add     $t3, $t3, $a0   # $t3 = A + 4*mid1
+    lw      $t3, 0($t3)     # load A[mid1] in $t3
+
+    mul     $t4, $t2, 4     # $t4 = 4*mid2
+    add     $t4, $t4, $a0   # $t4 = A + 4*mid2
+    lw      $t4, 0($t4)     # load A[mid2] in $t4
+
+recursive_search_key_eq_mid1:
+    bne     $a3, $t3, recursive_search_key_eq_mid2  # if key != A[mid1] branch to next condition
+    move    $v0, $t1                                # else set the return value to mid1
+    b       recursive_search_return                 # return
+
+recursive_search_key_eq_mid2:
+    bne     $a3, $t4, recursive_search_key_eq_mid2  # if key != A[mid2] branch to next condition
+    move    $v0, $t2                                # else set the return value to mid2
+    b       recursive_search_return                 # return
+
+recursive_search_key_lt_mid1:
+    bge     $a3, $t3, recursive_search_key_eq_mid2  # if key >= A[mid1] branch to next condition
+    
+    # else call recursive search
+    # $a0 is already set to array base address
+    # $a1 is already set to start
+    addi    $a2, $t1, -1                            # set $a2 = mid1 - 1
+    # $a3 is already set to key
+    jal     recursive_search                        # call recursive search with parameters A, start, mid1-1, key
+    b       recursive_search_return                 # return
+
+recursive_search_key_gt_mid2:
+    ble     $a3, $t4, recursive_search_else         # if key <= A[mid2] branch to next condition
+    
+    # else call recursive search
+    # $a0 is already set to array base address
+    addi    $a1, $t2, 1                             # set $a1 = mid2 + 1
+    # $a2 is already set to end
+    # $a3 is already set to key
+    jal     recursive_search                        # call recursive search with parameters A, mid2+1, end, key
+    b       recursive_search_return                 # return
+
+recursive_search_else:
+    # $a0 is already set to array base address
+    addi    $a1, $t1, 1                             # set $a1 = mid1 + 1
+    addi    $a2, $t2, -1                            # set $a2 = mid2 - 1
+    # $a3 is already set to key
+    jal     recursive_search                        # call recursive search with parameters A, mid1+1, mid2-1, key
 
 recursive_search_return:
     lw      $ra, -4($fp)    # restore $ra
 
-    addi    $sp, $sp, 4    # pop from stack
+    addi    $sp, $sp, 4     # pop from stack
 
     lw      $fp, 0($sp)     # restore frame pointer
     addi    $sp, $sp, 4     # restore stack pointer
