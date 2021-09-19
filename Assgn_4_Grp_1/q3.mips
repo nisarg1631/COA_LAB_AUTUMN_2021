@@ -18,6 +18,10 @@ prompt_sorted:
     .asciiz "Sorted array: "
 prompt_to_find:
     .asciiz "Please enter number to find: "
+prompt_found:
+    .asciiz " FOUND in the array at index (0-based indexing) "
+prompt_not_found:
+    .asciiz " NOT FOUND in the array\n"
 separator:
     .asciiz " : "
 newline:
@@ -29,7 +33,7 @@ newline:
 #
 # program variables
 # array_length: $s0
-# number to find: $s1
+# n (number to find): $s1
 
 main:
     jal     initStack
@@ -52,7 +56,7 @@ read_loop:
     la      $a0, separator
     syscall
     
-    li      $v0, 5   # read array element
+    li      $v0, 5      # read array element
     syscall   
 
     sw      $v0, array($t0)     # store array element in array[i]
@@ -62,7 +66,7 @@ read_loop:
     bne     $t0, 40, read_loop  # loop termination condition
 
     li      $v0, 4      # print prompt_to_find
-    la      $a0, prompt_arr
+    la      $a0, prompt_to_find
     syscall
 
     li      $v0, 5      # read number to find
@@ -70,11 +74,11 @@ read_loop:
 
     move    $s1, $v0    # store number to find in $s1  
 
-    la      $a0, array  # load array address in $a0
-    li      $a1, 0      # load start index in $a1
-    li      $a2, 9      # load end index in $a2
+    la      $a0, array      # load array address in $a0
+    li      $a1, 0          # load start index in $a1
+    addi    $a2, $s0, -1    # store end index in $a2 = len - 1
 
-    jal     recursive_sort  # call recursive sort with parameters array, 0, 9
+    jal     recursive_sort  # call recursive sort with parameters array, 0, len-1
 
     li      $v0, 4  # print prompt_sorted
     la      $a0, prompt_sorted
@@ -84,13 +88,49 @@ read_loop:
     move    $a1, $s0    # store array_length in $a1
     jal     print_array # print array
 
+    la      $a0, array      # load array address in $a0
+    li      $a1, 0          # load start index in $a1
+    addi    $a2, $s0, -1    # store end index in $a2 = len - 1
+    move    $a3, $s1        # move key to find in $a3
 
+    jal     recursive_search    # call recursive search with parameters array, 0, len-1, n
 
+    move    $s2, $v0                    # store return value in $s2
+    beq     $s2, -1, prompt_not_found   # if return value is -1 print not found
+
+    li      $v0, 1      # print n
+    move    $a0, $s1
+    syscall
+
+    li      $v0, 4      # print prompt_found
+    la      $a0, prompt_found
+    syscall
+
+    li      $v0, 1      # print return value
+    move    $a0, $s2
+    syscall
+
+    li      $v0, 4      # print newline
+    la      $a0, newline
+    syscall
+
+main_end:
     lw      $fp, 0($sp) # restore frame pointer
     addi    $sp, $sp, 4 # restore stack pointer
 
     li      $v0, 10     # terminate program
     syscall
+
+print_not_found:
+    li      $v0, 1      # print n
+    move    $a0, $s1
+    syscall
+
+    li      $v0, 4      # print prompt_not_found
+    la      $a0, prompt_not_found
+    syscall
+
+    b       main_end    # branch to main end
 
 # recursive search function
 #
@@ -133,12 +173,12 @@ recursive_search_key_eq_mid1:
     b       recursive_search_return                 # return
 
 recursive_search_key_eq_mid2:
-    bne     $a3, $t4, recursive_search_key_eq_mid2  # if key != A[mid2] branch to next condition
+    bne     $a3, $t4, recursive_search_key_lt_mid1  # if key != A[mid2] branch to next condition
     move    $v0, $t2                                # else set the return value to mid2
     b       recursive_search_return                 # return
 
 recursive_search_key_lt_mid1:
-    bge     $a3, $t3, recursive_search_key_eq_mid2  # if key >= A[mid1] branch to next condition
+    bge     $a3, $t3, recursive_search_key_gt_mid2  # if key >= A[mid1] branch to next condition
     
     # else call recursive search
     # $a0 is already set to array base address
@@ -328,12 +368,12 @@ swap:
 print_array: 
     li      $t0, 0      # i = 0
     li      $t2, 0      # offset = 0
-    move    $s0, $a0    # move array base address to $s0
+    move    $t3, $a0    # move array base address to $s0
 
 print_for_loop:
     bge     $t0, $a1, print_func_end  # if i>=n break
 
-    add     $t1, $s0, $t2       # $t1 = array base address + 4*i
+    add     $t1, $t3, $t2       # $t1 = array base address + 4*i
     lw      $t1, 0($t1)         # load array[i] in $t1
     addi    $t2, $t2, 4         # offset = offset + 4
     
