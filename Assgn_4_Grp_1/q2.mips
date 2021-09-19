@@ -14,7 +14,7 @@ array:
     .space 40    #10 element integer array
 prompt_arr:
     .asciiz "Please enter an integer: "
-sorting_sorted:
+prompt_sorted:
     .asciiz "Sorted array: "
 newline:
     .asciiz "\n"
@@ -46,28 +46,107 @@ read_loop:
     addi    $t0, $t0, 4         # i++
     bne     $t0, 40, read_loop  # loop termination condition
 
+    la      $a0, array  # load array address in $a0
+    li      $a1, 0      # load start index in $a1
+    li      $a2, 9      # load end index in $a2
+
+    jal     recursive_sort  # call recursive sort with parameters array, 0, 9
+
+    li      $v0, 4  # print prompt_sorted
+    la      $a0, prompt_sorted
+    syscall
+
+    la      $a0, array  # load array address in $a0
+    move    $a1, $s0    # store array_length in $a1
+    jal     print_array # print array
+
     lw      $fp, 0($sp) # restore frame pointer
     addi    $sp, $sp, 4 # restore stack pointer
+
     li      $v0, 10     # terminate program
     syscall
 
 # recursive sort function
-
-
-# swap function
 #
 # function variables
-# n1: $a0
-# n2: $a1
+#
+# array A start address: $a0
+# start index left: $a1
+# end index right: $a2
+# l: $s0
+# r: $s1
+# p: $s2
+
+recursive_sort:
+    move    $t0, $ra    # store $ra temporarily
+    jal     initStack   # initialise sp and fp
+    move    $t1, $a0    # store array address temporarily
+    
+    move    $a0, $t0    # push old ra to stack (fp-4)
+    jal     pushToStack
+    move    $a0, $s0    # push old s0 to stack (fp-8)
+    jal     pushToStack
+    move    $a0, $s1    # push old s1 to stack (fp-12)
+    jal     pushToStack
+    move    $a0, $s2    # push old s2 to stack (fp-16)
+    jal     pushToStack
+
+    move    $a0, $t1    # push array address (fp-20)
+    jal     pushToStack 
+    move    $a0, $a1    # push start index left (fp-24)
+    jal     pushToStack
+    move    $a0, $a2    # push end index right (fp-28)
+    jal     pushToStack
+
+    move    $s0, $a1    # l = left
+    move    $s1, $a2    # r = right
+    move    $s2, $a1    # p = left
+
+recursive_sort_outer_while:
+    bge     $s0, $s1, recursive_sort_return     # if l>=r then return
+
+recursive_sort_inner_while_l:
+    
+
+recursive_sort_return:
+    lw      $ra, -4($fp)    # restore $ra
+    lw      $s0, -8($fp)    # restore $s0
+    lw      $s1, -12($fp)   # restore $s1
+    lw      $s2, -16($fp)   # restore $s2
+    addi    $sp, $sp, 28    # pop from stack
+
+    lw      $fp, 0($sp)     # restore frame pointer
+    addi    $sp, $sp, 4     # restore stack pointer
+
+    jr      $ra             # return
+
+# swap function (for convenience we have implemented it such that
+# given the array base address and indices i and j it will swap
+# arr[i] and arr[j] wherever they are stored)
+#
+# function variables
+#
+# array base address: $a0
+# i: $a1
+# j: $a2
+
 swap:
-    move    $t0, $a0    # $t0 = n1
-    move    $a0, $a1    # $a0 = n2
-    move    $a1, $t0    # $a1 = n1
-    jr		$ra			# return
+    mul     $t0, $a1, 4     # $t0 = 4*i
+    add     $t0, $a0, $t0   # $t0 = base address of A + 4*i
+    lw      $t2, 0($t0)     # load the value at A + 4*i into $t2 = A[i]
+
+    mul     $t1, $a2, 4     # $t1 = 4*j
+    add     $t1, $a0, $t1   # $t1 = base address of A + 4*j
+    lw      $t3, 0($t1)     # load the value at A + 4*j into $t3 = A[j]
+
+    sw      $t2, 0($t1)     # load the value in $t2 at  A + 4*j, A[j] now has old value of A[i]
+    sw      $t3, 0($t0)     # load the value in $t3 at  A + 4*i, A[i] now has old value of A[j]
+    jr		$ra			    # return
 
 # print array function
 #
 # function variables
+#
 #   $a0: array
 #   $a1: N 
 #   $t0: i
@@ -110,7 +189,7 @@ print_func_end:
 initStack:
     addi    $sp, $sp, -4    # make space for storing frame pointer
     sw      $fp, 0($sp)     # store old frame pointer
-    move    $fp, $sp        # update frame pointer to the new base of stack
+    move    $fp, $sp        # update frame pointer to the 2new base of stack
     jr		$ra
     
 # push function
