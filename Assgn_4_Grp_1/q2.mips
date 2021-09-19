@@ -209,20 +209,22 @@ swap:
 #
 # function variables
 #
-#   $a0: array
+#   $a0: array base address
 #   $a1: N 
 #   $t0: i
-#   $t2: 4*i
+#   $t2: 4*i (offset)
 
 print_array: 
-    li      $t0, 0       # i = 0
-    li      $t2, 0       # offset = 0
+    li      $t0, 0      # i = 0
+    li      $t2, 0      # offset = 0
+    move    $s0, $a0    # move array base address to $s0
 
 print_for_loop:
     bge     $t0, $a1, print_func_end  # if i>=n break
 
-    lw      $t1, array($t2)   # load array[i] in $t1
-    addi    $t2, $t2, 4       # offset = offset + 4
+    add     $t1, $s0, $t2       # $t1 = array base address + 4*i
+    lw      $t1, 0($t1)         # load array[i] in $t1
+    addi    $t2, $t2, 4         # offset = offset + 4
     
     li      $v0, 1      # print array[i]
     move    $a0, $t1    # load array[i] in $a0
