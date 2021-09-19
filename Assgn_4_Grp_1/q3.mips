@@ -96,7 +96,7 @@ read_loop:
     jal     recursive_search    # call recursive search with parameters array, 0, len-1, n
 
     move    $s2, $v0                    # store return value in $s2
-    beq     $s2, -1, prompt_not_found   # if return value is -1 print not found
+    beq     $s2, -1, print_not_found    # if return value is -1 print not found
 
     li      $v0, 1      # print n
     move    $a0, $s1
