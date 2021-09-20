@@ -115,6 +115,7 @@ end:
 # column index: $s2
 # intermediate matrix A' base address: $s3
 # current sum: $s4
+# current sign: $s5
 
 recursive_det:
     move    $t0, $ra    # store $ra temporarily
@@ -133,6 +134,8 @@ recursive_det:
     jal     pushToStack
     move    $a0, $s4    # push old s4 to stack (fp-24)
     jal     pushToStack
+    move    $a0, $s5    # push old s5 to stack (fp-28)
+    jal     pushToStack
 
     move    $s0, $t1    # store n in $s0
     move    $s1, $a1    # store A base address in $s1
@@ -145,10 +148,17 @@ recursive_det:
     move    $s3, $v0        # store return value, i.e. base address of A' in $s3
 
     li      $s4, 0      # initialise current sum to 0
+    li      $s5, 1      # initialise current sign to +1
 
     beq     $s0, 1 recursive_det_base_case
 
+recursive_det_loop:
+    beq     $s2, $s0, recursive_det_return      # if column index == n then return
 
+
+
+    addi    $s2, $s2, 1                         # column index ++
+    b       recursive_det_loop
 
 recursive_det_base_case:
     lw      $s4, 0($s1)     # for n=1 answer is the single matrix element itself
@@ -167,7 +177,8 @@ recursive_det_return:
     lw      $s2, -16($fp)   # restore $s2
     lw      $s3, -20($fp)   # restore $s3
     lw      $s4, -24($fp)   # restore $s4
-    addi    $sp, $sp, 24    # pop from stack
+    lw      $s5, -28($fp)   # restore $s4
+    addi    $sp, $sp, 28    # pop from stack
 
     lw      $fp, 0($sp)     # restore frame pointer
     addi    $sp, $sp, 4     # restore stack pointer
