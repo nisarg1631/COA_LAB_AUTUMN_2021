@@ -11,73 +11,253 @@
 
 # program output text constants
 prompt1:
-    .asciiz "Enter first number: "
+    .asciiz "Enter three positive integers n, a and r:\n"
 prompt2:
-    .asciiz "Enter second number: "
-response:
-    .asciiz "Product of the two numbers are: "
-out_of_range_err:
-    .asciiz "Error: Number(s) entered is(are) out of range.\n"
+    .asciiz "Matrix A:\n\n"
+prompt3:
+    .asciiz "Final determinant of the matrix A is "
+not_positive_prompt:
+    .asciiz "Please enter positive integers only.\n"
+newline:
+    .asciiz "\n"
+space:
+    .asciiz " "
 
 .text
 
 # main program
 #
 # program variables
-#   n1:   $s0
-#   n2:   $s1
-#   product:    $s2
+#
+#  n: $s0
+#  a: $s1
+#  r: $s2
+#  matrix A base address: $s3
 
 main:
+    jal     initStack
+
     li      $v0, 4          # issue input prompt
     la      $a0, prompt1
     syscall
 
-    li      $v0, 5          # get a from user
+    li      $v0, 5          # get n from user
     syscall
     move    $s0, $v0
+    blez    $s0, not_positive_error     # check n is positive
 
-    li      $v0, 4          # issue input prompt
+    li      $v0, 5          # get a from user
+    syscall
+    move    $s1, $v0
+    blez    $s1, not_positive_error     # check a is positive
+
+    li      $v0, 5          # get r from user
+    syscall
+    move    $s2, $v0
+    blez    $s2, not_positive_error     # check r is positive
+
+    # allocate memory for A
+    mul     $a0, $s0, $s0   # $a0 = n*n
+    jal     mallocInStack   # call mallocInStack with argument n*n
+    move    $s3, $v0        # store return value, i.e. base address of A
+
+    # fill A
+    li      $t0, 0          # offset = 0
+    li      $t1, 1          # multiplier = 1
+
+fillA:
+    mul     $t2, $s1, $t1   # $t2 = a*multiplier
+    mul     $t3, $t0, 4     # $t3 = 4*offset
+    add     $t3, $s3, $t3   # $t3 = base address of A + 4*offset
+    sw      $t2, 0($t3)     # store a*multiplier to the location A + 4*offset
+    addi    $t0, $t0, 1     # offset++
+    mul     $t1, $t1, $s2   # multiplier = multiplier*r
+    mul     $t2, $s0, $s0   # $t2 = n*n
+    blt		$t0, $t2, fillA	# if offset < m*n then loop
+
+    li      $v0, 4          # issue matrix A print prompt
     la      $a0, prompt2
     syscall
 
-    li      $v0, 5          # get b from user
-    syscall
-    move    $s1, $v0
-
-    # check if n1 is in range
-    blt     $s0, -32768, out_of_range
-    bgt     $s0, 32767, out_of_range
-    # check if n2 is in range
-    blt     $s1, -32768, out_of_range
-    bgt     $s1, 32767, out_of_range
-
-    # move n1 and n2 to $a0 and $a1
+    # print A
     move    $a0, $s0
-    move    $a1, $s1
-    # call booths multiplication procedure
-    jal     multiply_booth
+    move    $a1, $s3
+    jal     printMatrix     # call print matrix with parameters n and A
 
-    # store the returned value in $s2
-    move    $s2, $v0
-
-    # print the product
-    li      $v0, 4
-    la      $a0, response
+    li      $v0, 4          # issue determinant print prompt
+    la      $a0, prompt3
     syscall
 
-    li      $v0, 1
-    move    $a0, $s2
-    syscall
+    # deallocate memory stored for matrix A
+    mul     $t0, $s0, $s0
+    mul     $t0, $t0, 4
+    add     $sp, $sp, $t0   # deallocate A
 
-    # branch to end
-    b		end
-    
-out_of_range:
-    li      $v0, 4          # issue error prompt
-    la      $a0, out_of_range_err
+    b       end
+
+not_positive_error:
+    li      $v0, 4          # issue not positive prompt
+    la      $a0, not_positive_prompt
     syscall
 
 end:
+    lw      $fp, 0($sp)     # restore frame pointer
+    addi    $sp, $sp, 4     # restore stack pointer
     li      $v0, 10         # terminate program
     syscall
+
+# determinant function
+#
+# function variables
+#
+# n: $a0 (stored in $s0)
+# matrix A (base address): $a1 (stored in $s1)
+# column index: $s2
+# intermediate matrix A' base address: $s3
+# current sum: $s4
+
+recursive_det:
+    move    $t0, $ra    # store $ra temporarily
+    jal     initStack   # initialise sp and fp
+    move    $t1, $a0    # store n temporarily
+    
+    move    $a0, $t0    # push old ra to stack (fp-4)
+    jal     pushToStack
+    move    $a0, $s0    # push old s0 to stack (fp-8)
+    jal     pushToStack
+    move    $a0, $s1    # push old s1 to stack (fp-12)
+    jal     pushToStack
+    move    $a0, $s2    # push old s2 to stack (fp-16)
+    jal     pushToStack
+    move    $a0, $s3    # push old s3 to stack (fp-20)
+    jal     pushToStack
+    move    $a0, $s4    # push old s4 to stack (fp-24)
+    jal     pushToStack
+
+    move    $s0, $t1    # store n in $s0
+    move    $s1, $a1    # store A base address in $s1
+    li      $s2, 0      # initial column index = 0
+
+    # allocate memory for A'
+    addi    $t0, $s0, -1    # $t0 = n - 1
+    mul     $a0, $t0, $t0   # $a0 = (n-1)*(n-1)
+    jal     mallocInStack   # call mallocInStack with argument n*n
+    move    $s3, $v0        # store return value, i.e. base address of A' in $s3
+
+    li      $s4, 0      # initialise current sum to 0
+
+    beq     $s0, 1 recursive_det_base_case
+
+
+
+recursive_det_base_case:
+    lw      $s4, 0($s1)     # for n=1 answer is the single matrix element itself
+
+recursive_det_return:
+    move    $v0, $s4        # store the sum in $v0 to return
+
+    addi    $t0, $s0, -1    # $t0 = n - 1
+    mul     $t0, $t0, $t0   # $t0 = (n-1)*(n-1)
+    mul     $t0, $t0, 4     # $t0 = 4*(n-1)*(n-1)
+    add     $sp, $sp, $t0   # deallocate A'
+
+    lw      $ra, -4($fp)    # restore $ra
+    lw      $s0, -8($fp)    # restore $s0
+    lw      $s1, -12($fp)   # restore $s1
+    lw      $s2, -16($fp)   # restore $s2
+    lw      $s3, -20($fp)   # restore $s3
+    lw      $s4, -24($fp)   # restore $s4
+    addi    $sp, $sp, 24    # pop from stack
+
+    lw      $fp, 0($sp)     # restore frame pointer
+    addi    $sp, $sp, 4     # restore stack pointer
+
+    jr      $ra             # return
+
+
+# print function
+#
+# function variables
+#
+# n: $a0
+# base address of matrix to print: $a1
+
+printMatrix:
+    li      $t0, 0          # offset = 0
+    li      $t1, 0          # column_index = 0
+
+printLoop:
+    mul     $t2, $t0, 4     # $t2 = 4*offset
+    add     $t2, $a1, $t2   # $t2 = base address of A + 4*offset
+    lw      $t2, 0($t2)     # load the value at A + 4*offset into $t2
+
+    move    $t3, $a0        # temporarily store n in $t3
+
+    li      $v0, 1          # print $t2
+    move    $a0, $t2
+    syscall
+
+    li      $v0, 4          # print space
+    la      $a0, space
+    syscall
+
+    move    $a0, $t3        # restore n in $a0
+
+    addi    $t0, $t0, 1             # offset++
+    addi    $t1, $t1, 1             # column_index++
+    blt     $t1, $a0, printLoop     # if column_index < n then loop else print newline
+
+    move    $t2, $a0        # temporarily store n in $t2
+    
+    li      $v0, 4          # print newline
+    la      $a0, newline
+    syscall
+    
+    li      $t1, 0          # reset column_index = 0
+
+    move    $a0, $t2        # restore n in $a0
+
+    mul     $t2, $a0, $a0       # $t2 = n*n
+    blt		$t0, $t2, printLoop	# if offset < n*n then loop else return
+
+    li      $v0, 4          # print an extra newline for clean output
+    la      $a0, newline
+    syscall
+
+    jr      $ra
+
+# initStack function
+#
+# program variables
+#
+# -
+
+initStack:
+    addi    $sp, $sp, -4    # make space for storing frame pointer
+    sw      $fp, 0($sp)     # store old frame pointer
+    move    $fp, $sp        # update frame pointer to the new base of stack
+    jr		$ra
+
+# malloc function
+#
+# program variables
+#
+# size: $a0
+# return base address: $v0
+
+mallocInStack:
+    mul     $t0, $a0, 4
+    sub		$sp, $sp, $t0   # sp = sp - (4*size), reserve space in stack
+    move    $v0, $sp        # store the base address in $v0
+    jr      $ra
+    
+# push function
+#
+# program variables
+#
+# n: $a0
+
+pushToStack:
+    addi    $sp, $sp, -4    # make space for storing the new element
+    sw      $a0, 0($sp)     # save the new element to stack
+    jr      $ra
