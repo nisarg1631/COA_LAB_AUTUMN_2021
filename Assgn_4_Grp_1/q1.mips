@@ -11,7 +11,7 @@
 
 # program output text constants
 prompt1:
-    .asciiz "Enter three positive integers n, a and r:\n"
+    .asciiz "Enter four positive integers n, a, r and m:\n"
 prompt2:
     .asciiz "Matrix A:\n\n"
 prompt3:
@@ -32,6 +32,7 @@ space:
 #  n: $s0
 #  a: $s1
 #  r: $s2
+#  m: $s5
 #  matrix A base address: $s3
 #  determinant: $s4
 
@@ -57,6 +58,11 @@ main:
     move    $s2, $v0
     blez    $s2, not_positive_error     # check r is positive
 
+    li      $v0, 5          # get m from user
+    syscall
+    move    $s5, $v0
+    blez    $s5, not_positive_error     # check m is positive
+
     # allocate memory for A
     mul     $a0, $s0, $s0   # $a0 = n*n
     jal     mallocInStack   # call mallocInStack with argument n*n
@@ -68,13 +74,20 @@ main:
 
 fillA:
     mul     $t2, $s1, $t1   # $t2 = a*multiplier
+    div		$t2, $s5		# a*multiplier / m
+    mfhi	$t2				# $t2 = a*multiplier mod m 
+    
     mul     $t3, $t0, 4     # $t3 = 4*offset
     add     $t3, $s3, $t3   # $t3 = base address of A + 4*offset
-    sw      $t2, 0($t3)     # store a*multiplier to the location A + 4*offset
+    sw      $t2, 0($t3)     # store a*multiplier mod m to the location A + 4*offset
     addi    $t0, $t0, 1     # offset++
+
     mul     $t1, $t1, $s2   # multiplier = multiplier*r
+    div		$t1, $s5		# multiplier / m
+    mfhi	$t1				# multiplier = multiplier mod m 
+    
     mul     $t2, $s0, $s0   # $t2 = n*n
-    blt		$t0, $t2, fillA	# if offset < m*n then loop
+    blt		$t0, $t2, fillA	# if offset < n*n then loop
 
     li      $v0, 4          # issue matrix A print prompt
     la      $a0, prompt2
