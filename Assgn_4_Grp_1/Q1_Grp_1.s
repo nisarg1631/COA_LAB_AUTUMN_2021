@@ -228,21 +228,29 @@ recursive_det_base_case:
     lw      $s4, 0($s1)     # for n=1 answer is the single matrix element itself
 
 recursive_det_return:
-    move    $v0, $s4        # store the sum in $v0 to return
-
     addi    $t0, $s0, -1    # $t0 = n - 1
     mul     $t0, $t0, $t0   # $t0 = (n-1)*(n-1)
     mul     $t0, $t0, 4     # $t0 = 4*(n-1)*(n-1)
     add     $sp, $sp, $t0   # deallocate A'
 
-    lw      $ra, -4($fp)    # restore $ra
-    lw      $s0, -8($fp)    # restore $s0
-    lw      $s1, -12($fp)   # restore $s1
-    lw      $s2, -16($fp)   # restore $s2
-    lw      $s3, -20($fp)   # restore $s3
-    lw      $s4, -24($fp)   # restore $s4
-    lw      $s5, -28($fp)   # restore $s4
-    addi    $sp, $sp, 28    # pop from stack
+    move    $t0, $s4        # temporarily store the sum to return
+
+    jal     popFromStack
+    move    $s5, $v0        # restore $s5
+    jal     popFromStack
+    move    $s4, $v0        # restore $s4
+    jal     popFromStack
+    move    $s3, $v0        # restore $s3
+    jal     popFromStack
+    move    $s2, $v0        # restore $s2
+    jal     popFromStack
+    move    $s1, $v0        # restore $s1
+    jal     popFromStack
+    move    $s0, $v0        # restore $s0
+    jal     popFromStack
+    move    $ra, $v0        # restore $ra
+
+    move    $v0, $t0        # store the sum to return in $v0
 
     lw      $fp, 0($sp)     # restore frame pointer
     addi    $sp, $sp, 4     # restore stack pointer
@@ -315,24 +323,35 @@ initStack:
 
 # malloc function
 #
-# program variables
+# function variables
 #
 # size: $a0
 # return base address: $v0
 
 mallocInStack:
-    mul     $t0, $a0, 4
-    sub		$sp, $sp, $t0   # sp = sp - (4*size), reserve space in stack
+    mul     $a0, $a0, 4
+    sub		$sp, $sp, $a0   # sp = sp - (4*size), reserve space in stack
     move    $v0, $sp        # store the base address in $v0
     jr      $ra
     
 # push function
 #
-# program variables
+# function variables
 #
 # n: $a0
 
 pushToStack:
     addi    $sp, $sp, -4    # make space for storing the new element
     sw      $a0, 0($sp)     # save the new element to stack
+    jr      $ra
+
+# pop function (returns the first element in stack and shifts the stack pointer)
+#
+# function variables
+#
+# -
+
+popFromStack:
+    lw      $v0, 0($sp)     # store the first element of stack as return value
+    addi    $sp, $sp, 4     # pop it from the stack
     jr      $ra
