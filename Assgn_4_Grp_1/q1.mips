@@ -33,6 +33,7 @@ space:
 #  a: $s1
 #  r: $s2
 #  matrix A base address: $s3
+#  determinant: $s4
 
 main:
     jal     initStack
@@ -84,8 +85,23 @@ fillA:
     move    $a1, $s3
     jal     printMatrix     # call print matrix with parameters n and A
 
+    # calculate determinant of A
+    move    $a0, $s0
+    move    $a1, $s3        
+    jal     recursive_det   # call recursive determinant with parameters n and A
+
+    move    $s4, $v0        # store determinant value in $s4
+
     li      $v0, 4          # issue determinant print prompt
     la      $a0, prompt3
+    syscall
+
+    li      $v0, 1          # print determinant value
+    move    $a0, $s4
+    syscall
+
+    li      $v0, 4          # print newline
+    la      $a0, newline
     syscall
 
     # deallocate memory stored for matrix A
@@ -106,7 +122,7 @@ end:
     li      $v0, 10         # terminate program
     syscall
 
-# determinant function
+# determinant function (note that we have followed 0-based indexing everywhere)
 #
 # function variables
 #
@@ -152,13 +168,48 @@ recursive_det:
 
     beq     $s0, 1 recursive_det_base_case
 
-recursive_det_loop:
+recursive_det_outer_loop:
     beq     $s2, $s0, recursive_det_return      # if column index == n then return
 
+    move    $t0, $s3        # offset (for intermediate matrix A') = base address of A'
+    li      $t1, 0          # current column = 0
+    li      $t2, 1          # current row = 1
 
+recursive_det_fill_loop:
+    beq     $t1, $s2, recursive_det_fill_loop_next_col  # if current column == column index then move to next column
+    
+    mul     $t3, $t2, $s0   # $t3 = current row * n
+    add     $t3, $t3, $t1   # $t3 = current row * n + current column
+    mul     $t3, $t3, 4     # $t3 = 4*(current row * n + current column)
+    add     $t3, $t3, $s1   # $t3 = A + 4*(current row * n + current column)
+    lw      $t3, 0($t3)     # $t3 = A[current row][current column]
+    
+    sw      $t3, 0($t0)     # store it in A'
+
+    addi    $t0, $t0, 4     # offset += 4
+
+recursive_det_fill_loop_next_col:
+    addi    $t1, $t1, 1                         # current column ++
+    blt     $t1, $s0, recursive_det_fill_loop   # if current column < n then loop else move to next row
+
+    li      $t1, 0                              # reset current column
+    addi    $t2, $t2, 1                         # current row ++
+    blt     $t2, $s0, recursive_det_fill_loop   # if current row < n then loop else calculate determinant of the generated intermediate matrix
+
+    addi    $a0, $s0, -1                        # $a0 = n - 1
+    move    $a1, $s3                            # $a1 = A' base address
+    jal     recursive_det                       # call recursive_det with parameters n-1, A'
+
+    mul     $t0, $s2, 4                         # $t0 = column index * 4
+    add     $t0, $t0, $s1                       # $t0 = A + column index * 4
+    lw      $t0, 0($t0)                         # $t0 = A[0][column index]
+    mul     $t0, $t0, $v0                       # $t0 = Minor(0, column index) * A[0][column index]
+    mul     $t0, $t0, $s5                       # $t0 = sign * Minor(0, column index) * A[0][column index]
+    add     $s4, $s4, $t0                       # current sum += Cofactor(0, column index) * A[0][column index]
+    mul     $s5, $s5, -1                        # sign = -sign
 
     addi    $s2, $s2, 1                         # column index ++
-    b       recursive_det_loop
+    b       recursive_det_outer_loop
 
 recursive_det_base_case:
     lw      $s4, 0($s1)     # for n=1 answer is the single matrix element itself
