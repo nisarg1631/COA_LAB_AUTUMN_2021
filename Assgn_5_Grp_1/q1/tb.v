@@ -1,8 +1,7 @@
 `timescale 1ns / 1ps
-
 //////////////////////////////////////////////////////////////////////////////////
 // Assignment Number: 5
-// Problem Number: 2 [Two’s Complement Converter FSM]
+// Problem Number: 1 [Linear Feedback Shift Register (LFSR)]
 // Semester Number: 5
 // Group Number: G1
 // Group Members: Animesh Jha (19CS10070) and Nisarg Upadhyaya (19CS30031)
@@ -12,33 +11,31 @@
 module tb;
 
 	// Inputs
-	reg in;
+	reg[3:0] seed=4'b1111;
 	reg clk=1;
 	reg reset=0;
+	reg select=0;
 
 	// Outputs
-	wire out;
-	always #40 clk = ~clk;
+	wire[3:0] out;
+	always #10 clk = ~clk;
 
 	// Instantiate the Unit Under Test (UUT)
-	two_complement_converter_fsm uut (
-		.out(out), 
-		.in(in), 
-		.clk(clk), 
-		.reset(reset)
+	linear_feedback_shift_register uut(
+		.sel(select),
+		.seed(seed),
+		.clk(clk),
+		.reset(reset),
+		.w(out)
 	);
 	initial begin
 		// Initialize Inputs
-      $monitor($time,"\t in = %b \t out = %b", in, out);
+      $monitor($time,"\t win = %b \t out = %b",uut.w_in,out);
 		reset = 1; 
-		#40 reset = 0; 
-		#40 in = 0;
-		#80 in = 0;
-		#80 in = 1;
-		#80 in = 0;
-		#80 in = 1; 
-		#80 $finish; 
-
+		#10 reset = 0; 
+		select=1;
+		#10 select = 0; 
+		
 	end
       
 endmodule

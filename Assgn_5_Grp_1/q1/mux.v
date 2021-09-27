@@ -10,14 +10,16 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module mux(
-    input x,   // input to the mux
+    input  x,   // input to the mux
     input y,   // input to the mux
     input select,   // select input to the mux
-    output out // output of the mux
+    output reg out // output of the mux
 );
-    reg q;
     always @(*) begin
-        out=(select&a)|(~select&b);
+        if(select)
+            out=y;
+        else 
+            out=x;
     end
 endmodule
 

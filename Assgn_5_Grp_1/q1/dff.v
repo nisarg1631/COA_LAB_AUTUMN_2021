@@ -13,10 +13,10 @@ module dff(
     input rst,
     input clk,
     input d,
-    output q
-)
-    reg q;
-    always @(posedge clk or posedge rst) begin
+    output reg q
+);
+    
+    always @(posedge clk) begin
         if (rst) begin
             q=0;
         end
