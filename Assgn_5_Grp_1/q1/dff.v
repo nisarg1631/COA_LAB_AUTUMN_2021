@@ -9,15 +9,19 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module mux(
-    input x,   // input to the mux
-    input y,   // input to the mux
-    input select,   // select input to the mux
-    output out // output of the mux
-);
+module dff(
+    input rst,
+    input clk,
+    input d,
+    output q
+)
     reg q;
-    always @(*) begin
-        out=(select&a)|(~select&b);
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            q=0;
+        end
+        else begin
+            q=d;
+        end
     end
 endmodule
-

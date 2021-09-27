@@ -15,31 +15,44 @@ module two_complement_converter_fsm(
     input reset             // reset input to the two’s complement converter
 );
     reg present,next;       // present and next states of FSM
-    always @(posedge clk) begin 
-        present=next         // present state is next state
-        if(reset) begin      // if reset
+    always @(posedge clk) 
+    begin 
+        present=next;         // present state is next state
+        if (reset) 
+        begin      // if reset
             next=0;          // next state is 0
             out=0;           // output is 0
         end
-        else begin
-            if(in==1) begin          // if input is 1
-                if (ps==0) begin     // if present state is 0
-                    next=1;          // next state is 1
-                    out=1;           // output is 1
+        else 
+		begin
+            if (present==0)
+            begin
+                begin
+                    if (in==1)
+                    begin
+                        next=1;
+                        out=1;
+                    end
+                    else
+                    begin
+                        next=0;
+                        out=0;
+                    end
                 end
-                else begin           // if present state is 1
-                    next=1;          // next state is 1
-                    out=0;           // output is 0
-                end       
             end
-            else begin
-                if (ps==0) begin     // if present state is 0
-                    next=0;          // next state is 0
-                    out=0;           // output is 0
-                end
-                else begin
-                    next=1;           // next state is 1
-                    out=0;           // output is 0
+            else 
+            begin
+                begin
+                    if (in==1)
+                    begin
+                        next=1;
+                        out=0;
+                    end
+                    else
+                    begin
+                        next=1;
+                        out=1;
+                    end
                 end
             end
         end

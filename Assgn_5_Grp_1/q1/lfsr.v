@@ -13,22 +13,11 @@ module linear_feedback_shift_register(
     input clk,
     input reset,
     input [3:0] seed,
-    output [3:0] out,
+    input sel
 );
-    reg [3:0] state;
-    reg [3:0] feedback;
-    always @(posedge clk) 
-    begin
-        if (reset) 
-        begin
-            state <= seed;
-        end 
-        else 
-        begin
-            feedback <= state[3] ^ state[2];
-            state <= state[2:0] << 1;
-            state[0] <= feedback;
-        end
-    end
-    assign out = state;
+    wire [3:0] state_out,state_in;
+    wire w;
+    dff DFF[3:0] (.q(state_out), .d(state_in), .clk(clk), .rst(reset));
+    mux Mux[3:0] (.x(seed), .y({state_out[2],state_out[1],state_out[0],w}), .select(sel), .out(state_in));
+    xor XOR(w,state_out[2],state_out[3]);
 endmodule
