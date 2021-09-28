@@ -21,8 +21,8 @@ module tb_sr;
 	always #4 clk = ~clk;
 
 	// Instantiate the Unit Under Test (UUT)
-    linear_shift_register psr1(.clk(clk), .reset(reset), .inp(decimal_num_1), .out(a));
-    linear_shift_register psr2(.clk(clk), .reset(reset), .inp(decimal_num_2), .out(b));
+    shift_register psr1(.clk(clk), .reset(reset), .inp(decimal_num_1), .out(a));
+    shift_register psr2(.clk(clk), .reset(reset), .inp(decimal_num_2), .out(b));
 	sequential_unsigned_comparator uut(.a(a),.b(b),.L(L),.E(E),.G(G),.clk(clk),.rst(reset),.op(opt));
 	initial begin
 		reset = 1'b1;

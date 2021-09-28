@@ -8,22 +8,26 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module linear_shift_register (
+module shift_register (
     input[31:0] inp,
     output reg out,
     input clk,
     input reset
 );
-	reg[31:0] temp;
-    always @(posedge clk) begin
-		if(reset) 
-		begin
-			temp=inp;
+
+	reg[31:0] temp; 	// register to store the loaded number
+
+    always @(posedge clk or posedge reset) begin
+		if(reset) begin
+			temp <= inp; 		// asynchronous load
 		end
-      else 
-		begin
-          temp = {temp[30:0],1'b0};	
-		end
-		out=temp[31];      
+      	else begin
+          	temp <= { temp[30:0], 1'b0 };	// left shift
+		end      
     end
+
+	always @(*) begin
+		out = temp[31];		// store the MSB as output
+	end
+
 endmodule
