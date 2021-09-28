@@ -45,7 +45,9 @@ module tb;
 		#8 in = 1;
 		#8 in = 0;
 		#8 in = 0;
+		#8 in = 0;
 		
+		#8
 		$display("TC 2\n");
 		reset = 1; in =0;
 		#4 reset = 0; 
@@ -56,6 +58,7 @@ module tb;
 		#8 in = 1;
 		#8 in = 1;
 		
+		#8
 		$display("TC 3\n");
 		reset = 1; in =0;
 		#4 reset = 0; 
@@ -66,6 +69,7 @@ module tb;
 		#8 in = 0;
 		#8 in = 0;
 		
+		#8
 		$display("TC 4\n");
 		reset = 1; in =0;
 		#4 reset = 0; 
