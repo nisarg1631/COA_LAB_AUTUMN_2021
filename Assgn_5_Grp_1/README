@@ -1,0 +1,7 @@
+Group 1
+
+Members: Nisarg Upadhyaya (19CS30031), Animesh Jha (19CS10070)
+
+1. Verilog files for each question are placed in the respective folder
+2. For each question the testbench file has been named tb.v and has been placed in the folder for that question
+3. For Q4 make sure to run the simulation for around 3000ns to ensure all test cases are run.
