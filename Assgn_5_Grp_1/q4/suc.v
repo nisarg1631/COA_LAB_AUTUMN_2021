@@ -43,17 +43,17 @@ module sequential_unsigned_comparator (
             E=0;
             G=0;
         end
-        else if(present_state==s0) begin
+        else if(next_state==s0) begin
             L=0;
             E=1;
             G=0;
         end
-        else if(present_state==s1) begin
+        else if(next_state==s1) begin
             L=0;
             E=0;
             G=1;
         end
-        else if(present_state==s2) begin
+        else if(next_state==s2) begin
             L=1;
             E=0;
             G=0;
