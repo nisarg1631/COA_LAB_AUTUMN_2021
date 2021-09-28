@@ -10,18 +10,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module dff(
-    input rst,
-    input clk,
-    input d,
-    output reg q
+    input rst, // reset switch for dff
+    input clk, // clock input to dff
+    input d,	// next state
+    output reg q // present state
 );
     
     always @(posedge clk) begin
         if (rst) begin
-            q=0;
+            q <= 1'b0; // if reset is on then move to state 0
         end
         else begin
-            q=d;
+            q <= d; // move to next state
         end
     end
 endmodule
