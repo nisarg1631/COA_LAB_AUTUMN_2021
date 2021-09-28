@@ -17,7 +17,7 @@ module tb_sr;
 	reg[31:0] decimal_num_1 = 32'd456;
     reg[31:0] decimal_num_2 = 32'd123;
 	wire a,b;
-	always #40 clk = ~clk;
+	always #4 clk = ~clk;
 
 	// Instantiate the Unit Under Test (UUT)
     linear_shift_register psr1(.clk(clk), .reset(reset), .inp(decimal_num_1), .out(a));
@@ -25,9 +25,9 @@ module tb_sr;
 	initial begin
 
 		reset = 1'b1;
-		#40 reset = 1'b0;
+		#4 reset = 1'b0;
 
 	end
-	always #80 $monitor($time,"\t a = %b, \t b = %b", a, b);
+	always #8 $monitor($time,"\t a = %b, \t b = %b", a, b);
       
 endmodule
