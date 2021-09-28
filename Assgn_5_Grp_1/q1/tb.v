@@ -29,8 +29,8 @@ module tb;
 		.w(out)
 	);
 	initial begin
-		// Initialize Inputs
-      $monitor($time,"\t win = %b \t out = %b",uut.w_in,out);
+
+      $monitor("out = %b %b %b %b",out[0],out[1],out[2],out[3]);
 		reset = 1; 
 		#10 reset = 0; 
 		select=1;
