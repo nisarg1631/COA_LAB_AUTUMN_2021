@@ -1,5 +1,3 @@
-
-
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Assignment Number: 5
@@ -14,17 +12,20 @@ module linear_shift_register (
     input[31:0] inp,
     output reg out,
     input clk,
-    input reset,
+    input reset
 );
+	reg[31:0] temp;
     always @(posedge clk) begin
         if(reset) 
         begin
             out = 0;            
+				temp=inp;
         end
         else 
         begin
-            out = inp[30];
-            inp = inp << 1;
+            temp = {temp[30:0],0};
+				out = temp[31];
         end
     end
+	 
 endmodule

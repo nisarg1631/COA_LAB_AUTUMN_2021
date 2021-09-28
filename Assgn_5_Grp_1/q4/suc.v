@@ -21,18 +21,16 @@ module sequential_unsigned_comparator (
     output reg G
 );
     reg [1:0] present_state,next_state;
-    localparam s0 = 0;
-    localparam s1 = 1;
-    localparam s2 = 2;
-    always @(posedge clk) begin
-        present_state=next_state;
+    localparam s0 = 2'b00;
+    localparam s1 = 2'b01;
+    localparam s2 = 2'b10;
+    always @(posedge clk) 
+    begin
+		present_state=next_state;
         if(rst) begin
             present_state = 0;
             next_state=0;
         end
-    end
-    always @(posedge clk) 
-    begin
         if (present_state==s0) 
         begin
             if(a^b) 
