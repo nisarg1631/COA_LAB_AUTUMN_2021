@@ -12,7 +12,7 @@
 module tb;
 
 	// Inputs
-	reg in;
+	reg in=0;
 	reg clk=1;
 	reg reset=0;
 
@@ -28,15 +28,23 @@ module tb;
 		.reset(reset)
 	);
 	initial begin
-		// Initialize Inputs
-      $monitor($time,"\t in = %b \t out = %b", in, out);
+		
 		reset = 1; 
 		#40 reset = 0; 
-		#40 in = 0;
+		#40
+		$monitor($time,"\t in = %b \t out = %b", in, out);
+		#80 in = 0;
+		#80 in = 0;
 		#80 in = 0;
 		#80 in = 1;
 		#80 in = 0;
-		#80 in = 1; 
+		#80 in = 1;
+		#80 in = 1;
+		#80 in = 1;
+		#80 in = 0;
+		#80 in = 1;
+		#80 in = 0;
+		#80 in = 0;
 		#80 $finish; 
 
 	end
