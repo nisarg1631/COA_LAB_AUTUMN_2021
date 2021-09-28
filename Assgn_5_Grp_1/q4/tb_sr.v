@@ -27,7 +27,7 @@ module tb_sr;
 	initial begin
 		reset = 1'b1;
 		#4 reset = 1'b0;
-		#4 opt=1'b1;
+		#264 opt=1'b1; // 33 clockcycles lsb has been read by now
 	end
 	always #8 $monitor($time,"\t a = %b, \t b = %b \t L= %b,\t E= %b\t G= %b ", a, b, L, E, G);
       
