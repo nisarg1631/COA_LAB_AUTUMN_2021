@@ -10,26 +10,29 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module linear_feedback_shift_register(
-    input clk,
-    input reset,
-    input [3:0] seed,
-    input sel,
-	 output wire[3:0] w
+    input clk, // clock input
+    input reset, // reset switch
+    input [3:0] seed, // initial seed
+    input sel, // select line for mux
+	 output wire[3:0] w // output
 );
-    
+    // internal wires
     wire [3:0] w_in;
     wire next;
-	
+	 
+	 // instantiate the muxes
     mux Mux3 (.x(next),.y(seed[3]),.select(sel),.out(w_in[0]));
-	mux Mux2 (.x(w[0]),.y(seed[2]),.select(sel),.out(w_in[1]));
-	mux Mux1 (.x(w[1]),.y(seed[1]),.select(sel),.out(w_in[2]));
-	mux Mux0 (.x(w[2]),.y(seed[0]),.select(sel),.out(w_in[3]));
-	
+	 mux Mux2 (.x(w[0]),.y(seed[2]),.select(sel),.out(w_in[1]));
+	 mux Mux1 (.x(w[1]),.y(seed[1]),.select(sel),.out(w_in[2]));
+	 mux Mux0 (.x(w[2]),.y(seed[0]),.select(sel),.out(w_in[3]));
+	 
+	 // instantiate the dffs
     dff DFF3 (.q(w[0]), .d(w_in[0]), .clk(clk), .rst(reset));
-	dff DFF2 (.q(w[1]), .d(w_in[1]), .clk(clk), .rst(reset));
-	dff DFF1 (.q(w[2]), .d(w_in[2]), .clk(clk), .rst(reset));
+	 dff DFF2 (.q(w[1]), .d(w_in[1]), .clk(clk), .rst(reset));
+	 dff DFF1 (.q(w[2]), .d(w_in[2]), .clk(clk), .rst(reset));
     dff DFF0 (.q(w[3]), .d(w_in[3]), .clk(clk), .rst(reset));
-	
+    
+	 // generate the next signal from present output
     xor XOR(next,w[2],w[3]);  
 
     
