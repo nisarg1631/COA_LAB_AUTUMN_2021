@@ -29,10 +29,10 @@ module tb;
 	);
 	
 	initial begin
-		reset=1;
-		#4 reset = 0;
-		#4
 
+		reset = 1'b1; in = 1'b0;
+		#4 reset = 1'b0;
+		#4
 		#8 in = 1'b1; decimal_num = 32'd1;
 		#8 in = 1'b0; decimal_num = 32'd2;
 		#8 in = 1'b0; decimal_num = 32'd4;
@@ -43,10 +43,9 @@ module tb;
 		#8 in = 1'b1; decimal_num = 32'd149;
 		#8 in = 1'b0; decimal_num = 32'd298;
 		#8 in = 1'b1; decimal_num = 32'd597;
-		
-   		#8 $finish; 
+		#8 $finish; 
+
 	end
 	always #8 $monitor($time,"\t new input bit = %b, \t number read till now = %d, \t divisibility by 3 = %b", in, decimal_num, out);
       
 endmodule
-
