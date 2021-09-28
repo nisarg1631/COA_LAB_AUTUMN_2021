@@ -18,7 +18,7 @@ module tb;
 
 	// Outputs
 	wire out;
-	always #40 clk = ~clk;
+	always #4 clk = ~clk;
 
 	// Instantiate the Unit Under Test (UUT)
 	two_complement_converter_fsm uut (
@@ -28,26 +28,58 @@ module tb;
 		.reset(reset)
 	);
 	initial begin
+	
+		$display("TC 1\n");
+		reset = 1; in =0;
+		#4 reset = 0; 
+		#4		
+		#8 in = 0;
+		#8 in = 0;
+		#8 in = 0;
+		#8 in = 1;
+		#8 in = 0;
+		#8 in = 1;
+		#8 in = 1;
+		#8 in = 1;
+		#8 in = 0;
+		#8 in = 1;
+		#8 in = 0;
+		#8 in = 0;
 		
-		reset = 1; 
-		#40 reset = 0; 
-		#40
-		$monitor($time,"\t in = %b \t out = %b", in, out);
-		#80 in = 0;
-		#80 in = 0;
-		#80 in = 0;
-		#80 in = 1;
-		#80 in = 0;
-		#80 in = 1;
-		#80 in = 1;
-		#80 in = 1;
-		#80 in = 0;
-		#80 in = 1;
-		#80 in = 0;
-		#80 in = 0;
-		#80 $finish; 
+		$display("TC 2\n");
+		reset = 1; in =0;
+		#4 reset = 0; 
+		#4
+		#8 in = 1;
+		#8 in = 1;
+		#8 in = 1;
+		#8 in = 1;
+		#8 in = 1;
+		
+		$display("TC 3\n");
+		reset = 1; in =0;
+		#4 reset = 0; 
+		#4
+		#8 in = 0;
+		#8 in = 0;
+		#8 in = 0;
+		#8 in = 0;
+		#8 in = 0;
+		
+		$display("TC 4\n");
+		reset = 1; in =0;
+		#4 reset = 0; 
+		#4
+		#8 in = 0;
+		#8 in = 0;
+		#8 in = 0;
+		#8 in = 1;
+		#8 in = 0;
+		
+		$finish; 
 
 	end
-      
+   	always #8 $monitor($time,"\t in = %b \t out = %b", in, out);
+	
 endmodule
 
