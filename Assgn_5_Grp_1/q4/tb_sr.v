@@ -14,8 +14,8 @@ module tb_sr;
 	// Inputs
 	reg clk = 1'b1;
 	reg reset = 1'b0;
-	reg opt;
-	reg[31:0] decimal_num_1 = 32'd124;
+	reg opt=1'b0;
+	reg[31:0] decimal_num_1 = -1*32'd1;
     reg[31:0] decimal_num_2 = 32'd123;
 	wire a,b,L,E,G;
 	always #4 clk = ~clk;
@@ -27,7 +27,7 @@ module tb_sr;
 	initial begin
 		reset = 1'b1;
 		#4 reset = 1'b0;
-		#4;
+		#4 opt=1'b1;
 	end
 	always #8 $monitor($time,"\t a = %b, \t b = %b \t L= %b,\t E= %b\t G= %b ", a, b, L, E, G);
       

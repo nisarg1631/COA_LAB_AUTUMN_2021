@@ -38,7 +38,7 @@ module sequential_unsigned_comparator (
         end            
     end 
     always @(posedge clk) begin
-        if(op==1) begin
+        if(op==0) begin
             L=0;
             E=0;
             G=0;
