@@ -15,15 +15,15 @@ module linear_shift_register (
     input reset
 );
 	reg[31:0] temp;
-    always @(posedge clk or posedge reset) begin
-        out=inp[31];
-        if(reset) 
-        begin    
+    always @(posedge clk) begin
+		if(reset) 
+		begin
 			temp=inp;
-        end
-        else 
-        begin
-            temp = {temp[30:0],0};	
-        end
+		end
+      else 
+		begin
+          temp = {temp[30:0],1'b0};	
+		end
+		out=temp[31];      
     end
 endmodule

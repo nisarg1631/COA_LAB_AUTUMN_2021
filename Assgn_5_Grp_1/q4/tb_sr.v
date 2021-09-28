@@ -26,7 +26,7 @@ module tb_sr;
 
 		reset = 1'b1;
 		#4 reset = 1'b0;
-
+		//#4;
 	end
 	always #8 $monitor($time,"\t a = %b, \t b = %b", a, b);
       
