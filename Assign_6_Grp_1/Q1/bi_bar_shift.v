@@ -15,6 +15,7 @@ module Bidirectional_Barrel_Shifter(
     input dir,
     output [7:0] out
 );
+// I have not used the trick sir discussed in the lab, of using an input layer of 8 muxs and an output layer of 8 muxes, I have instead added mux layers after each shift layer.
     reg [7:0] reg_temp,temp2;
     mux Layer1(.select(dir),.x({in[6:0],1'b0}),.y({1'b0,in[7:1]}),.out(reg_temp));  //  shift by 1 to left or right
     mux Layer2(.select(shamt[0]),.x(in),.y(reg_temp),.out(out));    // to shift or not shift  by 1 
