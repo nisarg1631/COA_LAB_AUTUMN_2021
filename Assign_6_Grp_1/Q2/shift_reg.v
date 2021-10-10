@@ -9,24 +9,24 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module shift_register (
-    input[8:0] inp,
+    input[7:0] inp,
     output reg out,
     input clk,
     input reset
 );
 
-	reg[8:0] temp; 	// register to store the loaded number
+	reg[7:0] temp; 	// register to store the loaded number
 
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk) begin
 		if(reset) begin
 			temp <= inp; 		// asynchronous load
 		end
       	else begin
-          	temp <= { temp[6:0], 1'b0 };	// left shift
+          	temp <= {1'b0,temp[7:1] };	// right shift
 		end      
     end
-	always @(*) begin
-		out = temp[7];		// store the MSB as output
+	always @(posedge clk) begin
+		out <= temp[0];		// store the LSB as output
 	end
 
 endmodule

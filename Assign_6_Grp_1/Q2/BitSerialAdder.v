@@ -15,15 +15,16 @@ module BitSerialAdder(
     input clock,
     input reset,
     output sum,
-    output reg c_out
-)
+    output wire c_out
+);
     wire c_in_real;
     dff FlipFlop(.rst(reset),.clk(clock),.d(c_out),.q(c_in_real));
     FullAdder fa(
-        .a(a_in),
-        .b(b_in),
-        .c(c_in),
+        .in1(a_in),
+        .in2(b_in),
+        .c_in(c_in_real),
         .sum(sum),
         .c_out(c_out)
     );
+    
 endmodule

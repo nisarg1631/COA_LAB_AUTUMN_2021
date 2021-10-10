@@ -10,10 +10,16 @@
 
 module shift_in_register(
     input in,
+    input rst,
     input clk,
     output reg[7:0] out
 );
-    always @(clk) begin
-        out={in,out[7:1]};
+    always @(posedge clk) begin
+        if(rst) begin
+            out=0;
+        end
+        else begin
+            out={in,out[7:1]};
+        end
     end
 endmodule

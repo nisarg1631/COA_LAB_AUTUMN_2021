@@ -18,7 +18,7 @@ module dff(
     
     always @(posedge clk) begin
         if (rst) begin
-            q <= 1'b0; // if reset is on then move to state 0
+            q <= 0; // if reset is on then move to state 0
         end
         else begin
             q <= d; // move to next state
