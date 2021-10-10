@@ -17,9 +17,62 @@ module tb_bsa;
     Bidirectional_Barrel_Shifter uut(.in(in),.shamt(shamt),.dir(dir),.out(out));    
 
     initial begin
+        $monitor($time,"\t in = %b, shamt = %d \t dir = %b \toutput = %b", in,shamt,dir, out);
+
+		$display("TC 1\n");
         #4;
         in=8'b11110011;
         shamt=3'b001;
+        dir=1'b1;
+        #8;
 
+        $display("TC 2\n");
+        #4;
+        in=8'b11110011;
+        shamt=3'b001;
+        dir=1'b0;
+        #8;
+
+        $display("TC 3\n");
+        #4;
+        in=8'b11110011;
+        shamt=3'b101;
+        dir=1'b1;
+        #8;
+
+        $display("TC 4\n");
+        #4;
+        in=8'b11110011;
+        shamt=3'b101;
+        dir=1'b0;
+        #8;
+
+        $display("TC 5\n");
+        #4;
+        in=8'b10010111;
+        shamt=3'b001;
+        dir=1'b1;
+        #8;
+
+        $display("TC 6\n");
+        #4;
+        in=8'b10010111;
+        shamt=3'b001;
+        dir=1'b0;
+        #8;
+
+        $display("TC 7\n");
+        #4;
+        in=8'b10010111;
+        shamt=3'b101;
+        dir=1'b1;
+        #8;
+
+        $display("TC 8\n");
+        #4;
+        in=8'b10010111;
+        shamt=3'b101;
+        dir=1'b0;
+        #8;
     end
 endmodule
