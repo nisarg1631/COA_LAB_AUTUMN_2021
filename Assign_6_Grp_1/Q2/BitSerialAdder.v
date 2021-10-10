@@ -17,14 +17,14 @@ module BitSerialAdder(
     output sum,
     output wire c_out
 );
-    wire c_in_real;
-    dff FlipFlop(.rst(reset),.clk(clock),.d(c_out),.q(c_in_real));
+    wire c_in_real;   // output of the DFF
+    dff FlipFlop(.rst(reset),.clk(clock),.d(c_out),.q(c_in_real));  // DFF to store prev carry
     FullAdder fa(
         .in1(a_in),
         .in2(b_in),
         .c_in(c_in_real),
         .sum(sum),
         .c_out(c_out)
-    );
+    );      //Full adder
     
 endmodule

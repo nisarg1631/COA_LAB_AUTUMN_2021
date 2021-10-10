@@ -8,7 +8,7 @@
 // Group Members: Animesh Jha (19CS10070) and Nisarg Upadhyaya (19CS30031)
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
+// Used old code
 module dff(
     input rst, // reset switch for dff
     input clk, // clock input to dff

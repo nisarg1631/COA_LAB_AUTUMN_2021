@@ -9,7 +9,7 @@
 	Group Members: Animesh Jha(19CS10070), Nisarg Upadhyaya (19CS30031)
 */
 //////////////////////////////////////////////////////////////////////////////////
-
+// Used old code
 module HalfAdder(
     input in1,
     input in2,

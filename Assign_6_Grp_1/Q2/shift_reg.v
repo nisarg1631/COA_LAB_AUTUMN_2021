@@ -7,7 +7,7 @@
 // Group Members: Animesh Jha (19CS10070) and Nisarg Upadhyaya (19CS30031)
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
+// Used old code
 module shift_register (
     input[7:0] inp,
     output reg out,

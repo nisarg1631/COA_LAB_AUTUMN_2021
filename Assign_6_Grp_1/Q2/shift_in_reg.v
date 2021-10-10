@@ -7,7 +7,6 @@
 // Group Members: Animesh Jha (19CS10070) and Nisarg Upadhyaya (19CS30031)
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
 module shift_in_register(
     input in,
     input rst,
@@ -15,11 +14,11 @@ module shift_in_register(
     output reg[7:0] out
 );
     always @(posedge clk) begin
-        if(rst) begin
+        if(rst) begin   //if reset is asserted, output is 0
             out=0;
         end
         else begin
-            out={in,out[7:1]};
+            out={in,out[7:1]};  // shift in the new bit on the msb side, drop the lsb
         end
     end
 endmodule
