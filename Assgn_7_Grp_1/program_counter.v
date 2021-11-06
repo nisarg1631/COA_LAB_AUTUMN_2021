@@ -15,10 +15,6 @@ module program_counter(
     output reg [31:0] pc_out
     );
 
-    initial begin
-        pc_out <= 0;
-    end
-
     always @(posedge clk) begin
         if(rst) begin
             pc_out <= 0;
