@@ -1,26 +1,12 @@
 `timescale 1ns / 1ps
 
-////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer:
-//
-// Create Date:   13:00:03 11/04/2021
-// Design Name:   alu
-// Module Name:   /home/nisargu/MyProjects/KGP-RISC/alu_tb.v
-// Project Name:  KGP-RISC
-// Target Device:  
-// Tool versions:  
-// Description: 
-//
-// Verilog Test Fixture created by ISE for module: alu
-//
-// Dependencies:
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+// Assignment Number: 7 [KGP-RISC]
+// Module: ALU
+// Semester Number: 5
+// Group Number: G1
+// Group Members: Animesh Jha (19CS10070) and Nisarg Upadhyaya (19CS30031)
+//////////////////////////////////////////////////////////////////////////////////
 
 module alu_tb;
 
