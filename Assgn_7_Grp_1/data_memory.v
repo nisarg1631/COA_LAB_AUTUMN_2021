@@ -2,24 +2,21 @@
 
 //////////////////////////////////////////////////////////////////////////////////
 // Assignment Number: 7 [KGP-RISC]
-// Module: Branching Mechanism
+// Module: Data Memory
 // Semester Number: 5
 // Group Number: G1
 // Group Members: Animesh Jha (19CS10070) and Nisarg Upadhyaya (19CS30031)
 //////////////////////////////////////////////////////////////////////////////////
 
-module branching_mechanism(
-    input [31:0] pc_in,
-	input [31:0] instruction,
-	input rst,
-    output reg [31:0] pc_out
+module data_memory(
+    input [31:0] address,
+    input clk,
+    input enable,
+    input write_enable,
+    input [31:0] write_data,
+    output [31:0] data_out
     );
 	
-	always @(*) begin
-		if(rst)
-			pc_out <= 32'd0;
-		else
-			pc_out <= pc_in + 32'd1;
-	end
+	datastore DataRAM (.clka(~clk), .ena(enable), .wea(write_enable), .addra(address[11:0]), .dina(write_data), .douta(data_out));
 
 endmodule

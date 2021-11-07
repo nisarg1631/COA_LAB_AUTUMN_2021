@@ -14,7 +14,7 @@ module alu(
     input [4:0] shamt,
     input [3:0] control,
     output reg [31:0] out,
-    output reg flag
+    output reg [2:0] flags
     );
 
     wire [31:0] sum, compliment, bitand, bitxor, sll, srl, sra;
@@ -34,48 +34,50 @@ module alu(
     assign sll = input1 << shamt_muxout;
     assign srl = input1 >> shamt_muxout;
     assign sra = input1 >>> shamt_muxout;
-    
+	
     always @(*) begin
+		flags[0] = input1 == 32'b0 ? 1'b1 : 1'b0;
+		flags[1] = input1[31] == 1'b1 ? 1'b1 : 1'b0;
         case(control[2:0])
             3'b000: 
                 begin
                     out = sum;
-                    flag = sumcarry;
+                    flags[2] = sumcarry;
                 end
             3'b001:
                 begin
                     out = compliment;
-                    flag = 1'b0;
+                    flags[2] = 1'b0;
                 end
             3'b010:
                 begin
                     out = bitand;
-                    flag = 1'b0;
+                    flags[2] = 1'b0;
                 end
             3'b011:
                 begin
                     out = bitxor;
-                    flag = 1'b0;
+                    flags[2] = 1'b0;
                 end
             3'b100:
                 begin
                     out = sll;
-                    flag = 1'b0;
+                    flags[2] = 1'b0;
                 end
             3'b101:
                 begin
                     out = srl;
-                    flag = 1'b0;
+                    flags[2] = 1'b0;
                 end
             3'b110:
                 begin
                     out = sra;
-                    flag = 1'b0;
+                    flags[2] = 1'b0;
                 end
             default:
                 begin
                     out = 32'b0;
-                    flag = 1'b0;
+                    flags[2] = 1'b0;
                 end
         endcase
     end

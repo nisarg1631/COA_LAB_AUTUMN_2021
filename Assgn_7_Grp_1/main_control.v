@@ -31,7 +31,7 @@ module main_control(
         111100 | 101   | 0         | 10       | 0        | 0       | 00       | 0
         111101 | 110   | 0         | 10       | 0        | 0       | 00       | 0
         111110 | 101   | 0         | 11       | 0        | 1       | 01       | 0
-        111111 | 101   | 0         | 00       | 1        | 0       | 00       | 0
+        111111 | 101   | 0         | 00       | 1        | 1       | 00       | 0
     */
 
     always @(*) begin
@@ -129,7 +129,7 @@ module main_control(
             6'b111111:
                 begin
                     branch <= 1'b0;
-                    mem_read <= 1'b0;
+                    mem_read <= 1'b1;
                     mem_write <= 1'b1;
                     mem_reg_pc <= 2'b00;
                     alu_op <= 3'b101;

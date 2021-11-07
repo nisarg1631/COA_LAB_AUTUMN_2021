@@ -13,7 +13,7 @@ module register_file_tb;
 	// Inputs
 	reg [4:0] reg1Addr;
 	reg [4:0] reg2Addr;
-	reg writeEnable;
+	reg [1:0] writeReg;
 	reg [31:0] writeData;
 	reg clk;
 	reg rst;
@@ -26,7 +26,7 @@ module register_file_tb;
 	register_file uut (
 		.reg1Addr(reg1Addr), 
 		.reg2Addr(reg2Addr), 
-		.writeEnable(writeEnable), 
+		.writeReg(writeReg), 
 		.writeData(writeData), 
 		.reg1Out(reg1Out), 
 		.reg2Out(reg2Out), 
@@ -37,10 +37,19 @@ module register_file_tb;
 	always #2 clk = ~clk;
 
 	initial begin
+	
+		$monitor ("reg0 = %d, reg1 = %d, reg2 = %d, reg3 = %d, reg31 = %d", 
+			$signed(uut.registers[0]), 
+			$signed(uut.registers[1]), 
+			$signed(uut.registers[2]), 
+			$signed(uut.registers[3]), 
+			$signed(uut.registers[31])
+			);
+			
 		// Initialize Inputs
 		reg1Addr = 0;
 		reg2Addr = 0;
-		writeEnable = 0;
+		writeReg = 0;
 		writeData = 0;
 		clk = 0;
 		rst = 1;
@@ -53,7 +62,7 @@ module register_file_tb;
 		// Add stimulus here
 		reg1Addr = 5'd1;
 		reg2Addr = 5'd2;
-		writeEnable = 1'b1;
+		writeReg = 2'b10;
 		writeData = 32'd16;
 
 		#4;
@@ -66,17 +75,17 @@ module register_file_tb;
 
 		reg1Addr = 5'd1;
 		reg2Addr = 5'd2;
-		writeEnable = 1'b0;
+		writeReg = 2'b00;
 
 		#4;
 
 		reg1Addr = 5'd3;
-		writeEnable = 1'b1;
+		writeReg = 2'b11;
 		writeData = 32'd10;
 
 		#4;
 
-		writeEnable = 1'b0;
+		writeReg= 2'b01;
 		writeData = 32'd9;
 		reg2Addr = 5'd1;
 
