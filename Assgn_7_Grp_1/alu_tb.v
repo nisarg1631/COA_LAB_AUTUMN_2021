@@ -18,7 +18,7 @@ module alu_tb;
 
 	// Outputs
 	wire signed [31:0] out;
-	wire flag;
+	wire [2:0] flags;
 
 	// Instantiate the Unit Under Test (UUT)
 	alu uut (
@@ -27,11 +27,11 @@ module alu_tb;
 		.shamt(shamt), 
 		.control(control), 
 		.out(out), 
-		.flag(flag)
+		.flags(flags)
 	);
 
 	initial begin
-		$monitor ("in1 = %d, in2 = %d, out = %d flag = %b, control = %b", input1, input2, out, flag, control);
+		$monitor ("in1 = %d, in2 = %d, out = %d, carry = %b, zero = %b, negative = %b, control = %b", input1, input2, out, flags[2], flags[0], flags[1], control);
 		// Initialize Inputs
 		input1 = 0;
 		input2 = 0;
@@ -72,8 +72,13 @@ module alu_tb;
 		control = 4'b0001;
 		#10;
 		
-		input1 = 32'd1234;
+		input1 = 32'd0;
 		input2 = -32'd896989867;
+		control = 4'b0001;
+		#10;
+		
+		input1 = 32'd1234;
+		input2 = 32'd0;
 		control = 4'b0001;
 		#10;
 		
@@ -181,6 +186,16 @@ module alu_tb;
 		input2 = 32'd106;
 		control = 4'b1110;
 		shamt = 5'd4;
+		#10;
+		
+		input1 = -32'd22;
+		input2 = 32'd0;
+		control = 4'b0111;
+		#10;
+		
+		input1 = 32'd0;
+		input2 = -32'd106;
+		control = 4'b0111;
 		#10;
 	end
       
