@@ -5,13 +5,21 @@ import json
 REGDICT = {}
 INSTRUCTION_DICT = {}
 
+def two_comp(num,nbits):
+    '''
+    gives nbit long two complement representation of number
+    '''
+    if num>=0:
+        return f"{num:0{nbits}b}"
+    else:
+        return f"{((1<<nbits)+num):0{nbits}b}"
 
 def spit_line(line):
     try:
-        print(f"processing {line}")
+        print(line)
         opcode=INSTRUCTION_DICT[line[0]][0]
         opc=int(opcode,2)
-        print(opc)
+        # print(opc)
         if opc==1 or opc==2:
             if len(line)!=3:
                 print("error")
@@ -29,7 +37,13 @@ def spit_line(line):
             else:
                 rs=f"{REGDICT[line[1]]:05b}"
                 funct=f"{INSTRUCTION_DICT[line[0]][-1]}"
-                print(f"{opcode} {rs}  {funct}")
+                rt=f"{0:05b}"
+                shamt=f"{0:010b}"
+                if line[2] in REGDICT:
+                    rt=f"{REGDICT[line[2]]:05b}"
+                else: 
+                    shamt=f"{int(line[2]):010b}"
+                print(f"{opcode} {rs} {rt} {shamt} {funct}")
         elif opc==4:
             if len(line)<2:
                 print("error")
@@ -54,6 +68,16 @@ def spit_line(line):
                 rs=f"{0:05b}"
                 addr=f"{int(line[1]):015b}"
                 print(f"{opcode} {rs} {addr} {funct}")
+        elif opc>=60 and opc<=63:
+            if len(line)!=3:
+                print("error")
+                return
+            else:
+                rs=f"{REGDICT[line[1]]:05b}"
+                rt=f"{0:05b}"
+                imm_dec=int(line[2])
+                imm=two_comp(imm_dec,16)
+                print(f"{opcode} {rs} {rt} {imm}")
     except:
         print("error")
 
