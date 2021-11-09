@@ -16,7 +16,7 @@ module alu_integrated_tb;
 	// Wires
 	wire [31:0] pc, pc_next;
 	wire [31:0] instr;
-	wire branch;
+	wire [1:0] branch;
 	wire mem_read;
 	wire mem_write;
 	wire [1:0] mem_reg_pc;
@@ -31,7 +31,7 @@ module alu_integrated_tb;
 	wire [2:0] flags;
 	wire [31:0] immediate;
 	wire [31:0] alu_in2;
-	wire pc_ref;
+	wire [31:0] pc_ref;
 	// Instantiate the Unit Under Tests (UUT)
 	// sign extend instr[15:0] to 32 bits
 	assign immediate = { {16{instr[15]}}, instr[15:0] };

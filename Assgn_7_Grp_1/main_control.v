@@ -10,7 +10,7 @@
 
 module main_control(
     input [5:0] opcode,
-    output reg branch,
+    output reg [1:0] branch,
     output reg mem_read,
     output reg mem_write,
     output reg [1:0] mem_reg_pc,
@@ -22,23 +22,23 @@ module main_control(
     /*
         Assign the values based on the following table:
         OPCODE | ALUop | ALUsource | WriteReg | MemWrite | MemRead | MemRegPC | Branch
-        000001 | 001   | 1         | 10       | 0        | 0       | 00       | 0
-        000010 | 010   | 1         | 10       | 0        | 0       | 00       | 0
-        000011 | 011   | 1         | 10       | 0        | 0       | 00       | 0
-        000100 | 000   | 1         | 00       | 0        | 0       | 00       | 1
-        000101 | 000   | 1         | 00       | 0        | 0       | 00       | 1
-        000110 | 000   | 1         | 01       | 0        | 0       | 10       | 1
-        111100 | 101   | 0         | 10       | 0        | 0       | 00       | 0
-        111101 | 110   | 0         | 10       | 0        | 0       | 00       | 0
-        111110 | 101   | 0         | 11       | 0        | 1       | 01       | 0
-        111111 | 101   | 0         | 00       | 1        | 1       | 00       | 0
+        000001 | 001   | 1         | 10       | 0        | 0       | 00       | 00
+        000010 | 010   | 1         | 10       | 0        | 0       | 00       | 00
+        000011 | 011   | 1         | 10       | 0        | 0       | 00       | 00
+        000100 | 000   | 1         | 00       | 0        | 0       | 00       | 01
+        000101 | 000   | 1         | 00       | 0        | 0       | 00       | 10
+        000110 | 000   | 1         | 01       | 0        | 0       | 10       | 11
+        111100 | 101   | 0         | 10       | 0        | 0       | 00       | 00
+        111101 | 110   | 0         | 10       | 0        | 0       | 00       | 00
+        111110 | 101   | 0         | 11       | 0        | 1       | 01       | 00
+        111111 | 101   | 0         | 00       | 1        | 1       | 00       | 00
     */
 
     always @(*) begin
         case(opcode)
             6'b000001:
                 begin
-                    branch <= 1'b0;
+                    branch <= 2'b00;
                     mem_read <= 1'b0;
                     mem_write <= 1'b0;
                     mem_reg_pc <= 2'b00;
@@ -48,7 +48,7 @@ module main_control(
                 end
             6'b000010:
                 begin
-                    branch <= 1'b0;
+                    branch <= 2'b00;
                     mem_read <= 1'b0;
                     mem_write <= 1'b0;
                     mem_reg_pc <= 2'b00;
@@ -58,7 +58,7 @@ module main_control(
                 end
             6'b000011:
                 begin
-                    branch <= 1'b0;
+                    branch <= 2'b00;
                     mem_read <= 1'b0;
                     mem_write <= 1'b0;
                     mem_reg_pc <= 2'b00;
@@ -68,7 +68,7 @@ module main_control(
                 end
             6'b000100:
                 begin
-                    branch <= 1'b1;
+                    branch <= 2'b01;
                     mem_read <= 1'b0;
                     mem_write <= 1'b0;
                     mem_reg_pc <= 2'b00;
@@ -78,7 +78,7 @@ module main_control(
                 end
             6'b000101:
                 begin
-                    branch <= 1'b1;
+                    branch <= 2'b10;
                     mem_read <= 1'b0;
                     mem_write <= 1'b0;
                     mem_reg_pc <= 2'b00;
@@ -88,7 +88,7 @@ module main_control(
                 end
             6'b000110:
                 begin
-                    branch <= 1'b1;
+                    branch <= 2'b11;
                     mem_read <= 1'b0;
                     mem_write <= 1'b0;
                     mem_reg_pc <= 2'b10;
@@ -98,7 +98,7 @@ module main_control(
                 end
             6'b111100:
                 begin
-                    branch <= 1'b0;
+                    branch <= 2'b00;
                     mem_read <= 1'b0;
                     mem_write <= 1'b0;
                     mem_reg_pc <= 2'b00;
@@ -108,7 +108,7 @@ module main_control(
                 end
             6'b111101:
                 begin
-                    branch <= 1'b0;
+                    branch <= 2'b00;
                     mem_read <= 1'b0;
                     mem_write <= 1'b0;
                     mem_reg_pc <= 2'b00;
@@ -118,7 +118,7 @@ module main_control(
                 end
             6'b111110:
                 begin
-                    branch <= 1'b0;
+                    branch <= 2'b00;
                     mem_read <= 1'b1;
                     mem_write <= 1'b0;
                     mem_reg_pc <= 2'b01;
@@ -128,7 +128,7 @@ module main_control(
                 end
             6'b111111:
                 begin
-                    branch <= 1'b0;
+                    branch <= 2'b00;
                     mem_read <= 1'b1;
                     mem_write <= 1'b1;
                     mem_reg_pc <= 2'b00;
@@ -138,7 +138,7 @@ module main_control(
                 end
             default:
                 begin
-                    branch <= 1'b0;
+                    branch <= 2'b00;
                     mem_read <= 1'b0;
                     mem_write <= 1'b0;
                     mem_reg_pc <= 2'b00;

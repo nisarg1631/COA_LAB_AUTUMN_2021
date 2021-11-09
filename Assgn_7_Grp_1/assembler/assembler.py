@@ -60,7 +60,7 @@ def spit_line(line):
                     else:
                         addr=f"{int(line[2]):015b}"
                 print(f"{opcode}{rs}{addr}{funct},", file = OUTPUT_FILE)
-        elif opc==5:
+        elif opc==5 or opc==6:
             if len(line)!=2:
                 print(f"error in line {line}")
                 return

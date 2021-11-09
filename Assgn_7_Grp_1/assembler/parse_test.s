@@ -91,25 +91,26 @@
 #     syscall
 # ###############################################################################
 
-add $5, $6
-comp $5, $6
-addi $5, -15
-compi $5, 15
-and $5, $6
-xor $5, $6
-shll $5,9
-shrl $5,9
-shllv $5, $6
-shrlv $5, $6
-shra $5, 9
-shrav  $5, $6
-lw $5, -9($4)
-sw $5, -9($4)
-b 14
-br $5
-bltz $5, 14
-bz $5, 14
-bnz $5, 14
-bl 14
-bcy 14
-bncy 14
+xor $1, $1
+addi $1, 20
+comp $2, $1
+compi $3, -18
+add $1, $3
+shll $1, 3
+shrl $3, 2
+and $3, $0
+compi $3, 22
+compi $3, $3
+xor $2, $2
+addi $2, 1
+shllv $2, $3
+xor $4, $4
+addi $4, -30
+xor $5, $5
+addi $5, 30
+xor $6, $6
+addi $6, 2
+shra $4, 2
+shrav $4, $6
+shra $5, 2
+shrav $5, $6
