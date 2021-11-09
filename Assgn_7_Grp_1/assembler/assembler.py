@@ -84,8 +84,8 @@ def spit_line(line):
                 print(f"error in line {line}")
                 return
             else:
-                rs=f"{REGDICT[line[1]]:05b}"
-                rt=f"{REGDICT[line[-1]]:05b}"
+                rt=f"{REGDICT[line[1]]:05b}"
+                rs=f"{REGDICT[line[-1]]:05b}"
                 imm_dec=int(line[2])
                 imm=two_comp(imm_dec,16)
                 print(f"{opcode}{rs}{rt}{imm},", file = OUTPUT_FILE)
