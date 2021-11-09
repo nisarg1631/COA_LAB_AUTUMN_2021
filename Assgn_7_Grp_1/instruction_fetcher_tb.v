@@ -32,13 +32,6 @@ module instruction_fetcher_tb;
 		.rst(rst)
 	);
 
-	// branching_mechanism uut3 (
-	// 	.pc_in(pc),
-	// 	.instruction(instr),
-	// 	.rst(rst),
-	// 	.pc_out(pc_next)
-	// );
-
 	always #2 clk = ~clk;
 
 	initial begin

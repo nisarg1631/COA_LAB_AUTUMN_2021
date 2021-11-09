@@ -2,18 +2,18 @@
 
 //////////////////////////////////////////////////////////////////////////////////
 // Assignment Number: 7 [KGP-RISC]
-// Module: ALU Integrated Testbench
+// Module: Top Module
 // Semester Number: 5
 // Group Number: G1
 // Group Members: Animesh Jha (19CS10070) and Nisarg Upadhyaya (19CS30031)
 //////////////////////////////////////////////////////////////////////////////////
 
-module alu_integrated_tb;
+module KGP_RISC(
+    input clk,
+    input rst
+    );
 
-	// Inputs
-	reg clk, rst;
-
-	// Wires
+    // Wires
 	wire [31:0] pc, pc_next;
 	wire [31:0] instr;
 	wire [1:0] branch;
@@ -33,10 +33,15 @@ module alu_integrated_tb;
 	wire [31:0] immediate;
 	wire [31:0] alu_in2;
 	wire [31:0] pc_ref;
-	// Instantiate the Unit Under Tests (UUT)
-	// sign extend instr[15:0] to 32 bits
+
+
+	// sign extend instr[15:0] to 32 bits (immediate)
 	assign immediate = { {16{instr[15]}}, instr[15:0] };
+
+    // sign extend instr[20:6] to 32 bits (branch_address)
 	assign branch_address= { {17{instr[20]}}, instr[20:6]};
+
+    // alu 2nd input selector
 	assign alu_in2 = alu_source ? reg2Out : immediate;
 
 	mem_reg_pc_selector WDS (
@@ -118,29 +123,6 @@ module alu_integrated_tb;
 		.clk(clk), 
 		.rst(rst)
 	);
-	
-	always #2 clk = ~clk;
 
-	initial begin
-		// Initialize Inputs
-		$monitor ("reg0 = %d, reg1 = %d, reg2 = %d, reg3 = %d, reg4 = %d, reg5 = %d, reg6 = %d", 
-			$signed(RF.registers[0]), 
-			$signed(RF.registers[1]), 
-			$signed(RF.registers[2]), 
-			$signed(RF.registers[3]), 
-			$signed(RF.registers[4]), 
-			$signed(RF.registers[5]), 
-			$signed(RF.registers[6])
-			);
-		clk = 0;
-		rst = 1;
-		// Wait 100 ns for global reset to finish
-		#100;
-        
-		// Add stimulus here
-		rst = 0;
-		
-	end
-      
+
 endmodule
-

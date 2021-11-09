@@ -20,7 +20,7 @@ module main_control_tb;
 	wire mem_write;
 	wire mem_read;
 	wire [1:0] mem_reg_pc;
-	wire branch;
+	wire [1:0] branch;
 
 	// Instantiate the Unit Under Test (UUT)
 	main_control uut (
