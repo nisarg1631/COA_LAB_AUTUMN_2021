@@ -69,13 +69,23 @@ def spit_line(line):
                 rs=f"{0:05b}"
                 addr=f"{int(line[1]):015b}"
                 print(f"{opcode}{rs}{addr}{funct},", file = OUTPUT_FILE)
-        elif opc>=60 and opc<=63:
+        elif opc==60 or opc==61:
             if len(line)!=3:
                 print(f"error in line {line}")
                 return
             else:
                 rs=f"{REGDICT[line[1]]:05b}"
                 rt=f"{0:05b}"
+                imm_dec=int(line[2])
+                imm=two_comp(imm_dec,16)
+                print(f"{opcode}{rs}{rt}{imm},", file = OUTPUT_FILE)
+        elif opc==62 or opc==63:
+            if len(line)!=4:
+                print(f"error in line {line}")
+                return
+            else:
+                rs=f"{REGDICT[line[1]]:05b}"
+                rt=f"{REGDICT[line[-1]]:05b}"
                 imm_dec=int(line[2])
                 imm=two_comp(imm_dec,16)
                 print(f"{opcode}{rs}{rt}{imm},", file = OUTPUT_FILE)
@@ -99,7 +109,7 @@ def process(filename):
             line.strip()
             line = bin_comm(line)
             
-            line = line.replace(',',' ').split()
+            line = line.replace(',',' ').replace(')',' ').replace('(',' ').split()
             if len(line):
                 spit_line(line)
     print(f"{0:032b};", file = OUTPUT_FILE)
