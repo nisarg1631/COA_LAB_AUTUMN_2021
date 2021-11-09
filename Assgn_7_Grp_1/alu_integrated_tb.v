@@ -90,6 +90,7 @@ module alu_integrated_tb;
 		.pc_in(pc),
 		.instruction(instr),
 		.rst(rst),
+		.branch_control_signal(branch)
 		.alu_flag(flags),
 		.pc_out(pc_next)
 	);
