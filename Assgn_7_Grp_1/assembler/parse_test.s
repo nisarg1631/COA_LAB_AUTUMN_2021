@@ -100,11 +100,11 @@ xor $5, $6
 shll $5,9
 shrl $5,9
 shllv $5, $6
-shrl $5, $6
+shrlv $5, $6
 shra $5, 9
 shrav  $5, $6
-lw $5, -9
-sw $5, -9
+lw $5, -9($4)
+sw $5, -9($4)
 b 14
 br $5
 bltz $5, 14
