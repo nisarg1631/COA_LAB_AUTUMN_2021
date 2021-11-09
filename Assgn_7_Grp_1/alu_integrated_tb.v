@@ -71,13 +71,6 @@ module alu_integrated_tb;
 		.rst(rst)
 	);
 
-	branching_mechanism BM (
-		.pc_in(pc),
-		.instruction(instr),
-		.rst(rst),
-		.pc_out(pc_next)
-	);
-
 	alu_control ACU (
 		.alu_op(alu_op), 
 		.func_code(instr[5:0]), 
@@ -92,7 +85,15 @@ module alu_integrated_tb;
 		.out(alu_out), 
 		.flags(flags)
 	);
-
+	
+	branching_mechanism BM (
+		.pc_in(pc),
+		.instruction(instr),
+		.rst(rst),
+		.alu_flag(flags),
+		.pc_out(pc_next)
+	);
+	
 	register_file RF (
 		.reg1Addr(instr[25:21]), 
 		.reg2Addr(instr[20:16]), 
