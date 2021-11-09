@@ -1,3 +1,6 @@
+# Test File 3
+# Load/Store and Branch
+
 addi $1, 16
 addi $2, 30
 addi $3, 22
@@ -5,6 +8,9 @@ sw $1, 8, $3
 sw $2, -6, $3
 lw $2, 8, $3
 lw $1, -6, $3
+
+# Test branch instructions, store -1 in $1 on failure and 1 on success
+
 xor $1, $1
 xor $2, $2
 xor $3, $3
@@ -61,6 +67,3 @@ addi $2, 0
 bncy 63
 addi $1, -1
 addi $1, 1
-# Test File 3
-# Load/Store and Branch
-# Test branch instructions, store -1 in $1 on failure and 1 on success
