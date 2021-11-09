@@ -17,7 +17,7 @@ module branching_mechanism(
 	input [2:0] alu_flag,
 	input rst,
     output reg [31:0] pc_out,
-	output reg [31:0] ref,
+	output reg [31:0] ref
     );
 	/*
 		name 	ins_func_code		branch_control		alu_flag(ZNC)	pc_out			ref
@@ -31,8 +31,8 @@ module branching_mechanism(
 		bl		000000				10					xxx				dest_addr		pc_in+1
 		none 	xxxxxx				11					xxx				pc_in+1			pc_in+1
 	*/
-	ref = pc_in+32'd1;
 	always @(*) begin
+		ref <= pc_in+32'd1;
 		if(rst)
 			pc_out <= 32'd0;
 		else begin 
