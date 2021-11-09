@@ -10,5 +10,5 @@ This repository contains the code for Assignment 7 for Computer Organization and
 1. Run the command `python assembler.py test.s`, the assembler would produce `output`
 1. Copy the contents of `output` to `instructions.coe`
 1. Load files with _tb.v as the simulation files and the rest as implementation files
-1. Load and initialise bram modules `datastore` (single port RAM) and `instructions` (single port ROM), initialise `instructions` with the `instructions.coe` file.
+1. Load and initialise bram modules `datastore` (single port RAM) and `instructions` (single port ROM), initialise `instructions` with the `instructions.coe` file. Set width to 32 and depth to 4096 in both of them.
 1. Simulate `KGP-RISC_tb.v`
