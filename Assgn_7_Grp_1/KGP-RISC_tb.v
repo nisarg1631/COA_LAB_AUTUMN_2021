@@ -24,7 +24,7 @@ module KGP_RISC_tb;
 	
 	initial begin
 	
-		$monitor ("reg0 = %d, reg1 = %d, reg2 = %d, reg3 = %d, reg4 = %d, reg5 = %d, reg6 = %d", 
+		$monitor ("reg0 = %d\t, reg1 = %d\t, reg2 = %d\t, reg3 = %d\t, reg4 = %d\t, reg5 = %d\t, reg6 = %d\t", 
 			$signed(uut.RF.registers[0]), 
 			$signed(uut.RF.registers[1]), 
 			$signed(uut.RF.registers[2]), 
