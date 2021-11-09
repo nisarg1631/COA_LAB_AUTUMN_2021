@@ -31,10 +31,11 @@ module alu_integrated_tb;
 	wire [2:0] flags;
 	wire [31:0] immediate;
 	wire [31:0] alu_in2;
-
+	wire pc_ref;
 	// Instantiate the Unit Under Tests (UUT)
 	// sign extend instr[15:0] to 32 bits
 	assign immediate = { {16{instr[15]}}, instr[15:0] };
+	assign branch_address= {17{instr[20]}}, instr[20:6]};
 	assign alu_in2 = alu_source ? reg2Out : immediate;
 	assign write_data = mem_reg_pc == 2'b01 ? data_out : alu_out;
 
@@ -88,11 +89,14 @@ module alu_integrated_tb;
 	
 	branching_mechanism BM (
 		.pc_in(pc),
-		.instruction(instr),
-		.rst(rst),
+		.dest_addr(branch_address), 
+		.reg1(reg1Out),
 		.branch_control_signal(branch)
+		.ins_func_code(instr[5:0]),
 		.alu_flag(flags),
-		.pc_out(pc_next)
+		.rst(rst),
+		.pc_out(pc_next),
+		.ref(pc_ref)
 	);
 	
 	register_file RF (
