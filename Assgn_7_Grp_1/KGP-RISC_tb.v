@@ -24,22 +24,22 @@ module KGP_RISC_tb;
 	
 	initial begin
 	
-		$monitor ("reg0 = %d\t, reg1 = %d\t, reg2 = %d\t, reg3 = %d\t, reg4 = %d\t, reg5 = %d\t, reg6 = %d\t", 
+		$monitor ("reg0 = %d\t, reg1 = %d\t, reg2 = %d\t, reg3 = %d\t, reg4 = %d\t, reg11 = %d\t, reg12 = %d\t", 
 			$signed(uut.RF.registers[0]), 
 			$signed(uut.RF.registers[1]), 
 			$signed(uut.RF.registers[2]), 
 			$signed(uut.RF.registers[3]), 
 			$signed(uut.RF.registers[4]), 
-			$signed(uut.RF.registers[5]), 
-			$signed(uut.RF.registers[6])
+			$signed(uut.RF.registers[11]), 
+			$signed(uut.RF.registers[12])
 			);
 		
 		// Initialize Inputs
 		clk = 0;
 		rst = 1;
 
-		// Wait 100 ns for global reset to finish
-		#100;
+		// Wait 10 ns for global reset to finish
+		#10;
         
 		// Add stimulus here
 		rst = 0;
