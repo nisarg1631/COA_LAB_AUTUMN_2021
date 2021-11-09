@@ -34,7 +34,7 @@ module alu_integrated_tb;
 
 	// Instantiate the Unit Under Tests (UUT)
 	// sign extend instr[15:0] to 32 bits
-	assign immediate = { 16'b0, instr[15:0] };
+	assign immediate = { {16{instr[15]}}, instr[15:0] };
 	assign alu_in2 = alu_source ? reg2Out : immediate;
 	assign write_data = mem_reg_pc == 2'b01 ? data_out : alu_out;
 
@@ -80,7 +80,7 @@ module alu_integrated_tb;
 	alu ALU (
 		.input1(reg1Out), 
 		.input2(alu_in2), 
-		.shamt(instr[15:11]), 
+		.shamt(instr[10:6]), 
 		.control(alu_control_signal), 
 		.out(alu_out), 
 		.flags(flags)
