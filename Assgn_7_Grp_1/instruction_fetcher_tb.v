@@ -12,9 +12,11 @@ module instruction_fetcher_tb;
 
 	// Inputs
 	reg clk, rst;
+	
+	reg [31:0] pc_next;
 
 	// Outputs
-	wire [31:0] pc, pc_next;
+	wire [31:0] pc;
 	wire [31:0] instr;
 
 	// Instantiate the Unit Under Test (UUT)
@@ -33,6 +35,10 @@ module instruction_fetcher_tb;
 	);
 
 	always #2 clk = ~clk;
+	
+	always @(*) begin
+		pc_next <= pc + 32'd1;
+	end
 
 	initial begin
 		// Initialize Inputs
