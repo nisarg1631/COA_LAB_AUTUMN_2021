@@ -16,7 +16,8 @@ module register_file(
     output [31:0] reg1Out,
     output [31:0] reg2Out,
     input clk,
-    input rst
+    input rst,
+	output [31:0] retReg // for getting final output while testing
     );
 
     reg [31:0] registers[31:0];
@@ -79,5 +80,5 @@ module register_file(
 
     assign reg1Out = registers[reg1Addr];
     assign reg2Out = registers[reg2Addr];
-
+	assign retReg = registers[5'b00001];
 endmodule

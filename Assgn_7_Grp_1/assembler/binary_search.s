@@ -47,7 +47,7 @@ sw $1, 10, $0
 b 54
 
 # Binary Search
-# Final result will be available in $3, if found 1 else -1
+# Final result will be available in $1, if found 1 else -1
 
 # Initialise lo($7) to 1 and hi($8) to 10
 #22: 
@@ -123,13 +123,13 @@ b 24
 
 # Successful exit
 #50: 
-addi $3, 1
+addi $1, 1
 #51: 
 b 53
 
 # Unsuccessful exit
 #52: 
-addi $3, -1
+addi $1, -1
 
 # Return
 #53:
@@ -138,44 +138,44 @@ br $31
 # Main
 #54:
 
-# Clear $2 and $3
+# Clear $2 and $1
 xor $2, $2
-xor $3, $3
+xor $1, $1
 addi $2, 1 # try to find 1
 bl 22 # call binary search
 
-# Clear $2 and $3
+# Clear $2 and $1
 xor $2, $2
-xor $3, $3
+xor $1, $1
 addi $2, 2 # try to find 2
 bl 22 # call binary search
 
-# Clear $2 and $3
+# Clear $2 and $1
 xor $2, $2
-xor $3, $3
+xor $1, $1
 addi $2, 3 # try to find 3
 bl 22 # call binary search
 
-# Clear $2 and $3
+# Clear $2 and $1
 xor $2, $2
-xor $3, $3
+xor $1, $1
 addi $2, 15 # try to find 15
 bl 22 # call binary search
 
-# Clear $2 and $3
+# Clear $2 and $1
 xor $2, $2
-xor $3, $3
+xor $1, $1
 addi $2, 47 # try to find 47
 bl 22 # call binary search
 
-# Clear $2 and $3
+# Clear $2 and $1
 xor $2, $2
-xor $3, $3
+xor $1, $1
 addi $2, 55 # try to find 55
 bl 22 # call binary search
 
-# Clear $2 and $3
+# Clear $2 and $1
 xor $2, $2
-xor $3, $3
+xor $1, $1
 addi $2, 0 # try to find 0
 bl 22 # call binary search

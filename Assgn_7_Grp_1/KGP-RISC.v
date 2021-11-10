@@ -10,7 +10,8 @@
 
 module KGP_RISC(
     input clk,
-    input rst
+    input rst,
+	output [31:0] retReg
     );
 
     // Wires
@@ -121,7 +122,8 @@ module KGP_RISC(
 		.reg1Out(reg1Out), 
 		.reg2Out(reg2Out), 
 		.clk(clk), 
-		.rst(rst)
+		.rst(rst),
+		.retReg(retReg)
 	);
 
 

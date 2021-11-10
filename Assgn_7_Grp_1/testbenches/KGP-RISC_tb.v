@@ -13,18 +13,22 @@ module KGP_RISC_tb;
 	// Inputs
 	reg clk;
 	reg rst;
+	
+	// Outputs
+	wire [31:0] retReg;
 
 	// Instantiate the Unit Under Test (UUT)
 	KGP_RISC uut (
 		.clk(clk), 
-		.rst(rst)
+		.rst(rst),
+		.retReg(retReg)
 	);
 	
 	always #2 clk = ~clk;
 	
 	initial begin
 	
-		$monitor ("reg0 = %d\t, reg1 = %d\t, reg2 = %d\t, reg3 = %d\t, reg4 = %d\t, reg5 = %d\t, reg6 = %d\t, reg11 = %d\t, reg12 = %d\t", 
+		/*$monitor("reg0 = %d\t, reg1 = %d\t, reg2 = %d\t, reg3 = %d\t, reg4 = %d\t, reg5 = %d\t, reg6 = %d\t, reg11 = %d\t, reg12 = %d\t", 
 			$signed(uut.RF.registers[0]), 
 			$signed(uut.RF.registers[1]), 
 			$signed(uut.RF.registers[2]), 
@@ -34,7 +38,9 @@ module KGP_RISC_tb;
 			$signed(uut.RF.registers[6]), 
 			$signed(uut.RF.registers[11]), 
 			$signed(uut.RF.registers[12])
-			);
+			);*/
+			
+			$monitor("Return value: ", $signed(retReg));
 		
 		// Initialize Inputs
 		clk = 0;
